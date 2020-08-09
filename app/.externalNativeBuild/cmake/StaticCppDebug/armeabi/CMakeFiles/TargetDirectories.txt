@@ -1,0 +1,3 @@
+/Users/charles/Desktop/MMKVDemo/app/.externalNativeBuild/cmake/StaticCppDebug/armeabi/CMakeFiles/rebuild_cache.dir
+/Users/charles/Desktop/MMKVDemo/app/.externalNativeBuild/cmake/StaticCppDebug/armeabi/CMakeFiles/edit_cache.dir
+/Users/charles/Desktop/MMKVDemo/app/.externalNativeBuild/cmake/StaticCppDebug/armeabi/CMakeFiles/native-lib.dir

@@ -1,0 +1,17 @@
+{
+  "buildFiles": [
+    "/Users/charles/Desktop/MMKVDemo/app/CMakeLists.txt",
+    "/Users/charles/Desktop/MMKVDemo/app/../../../Documents/Android/sdk/ndk-r16b/build/cmake/android.toolchain.cmake"
+  ],
+  "cleanCommands": [
+    "/Users/charles/Documents/Android/sdk/cmake/3.10.2.4988404/bin/cmake --build /Users/charles/Desktop/MMKVDemo/app/.externalNativeBuild/cmake/SharedCppDebug/armeabi --target clean"
+  ],
+  "libraries": {
+    "native-lib-Debug-armeabi": {
+      "artifactName": "native-lib",
+      "buildCommand": "/Users/charles/Documents/Android/sdk/cmake/3.10.2.4988404/bin/cmake --build /Users/charles/Desktop/MMKVDemo/app/.externalNativeBuild/cmake/SharedCppDebug/armeabi --target native-lib",
+      "abi": "armeabi",
+      "output": "/Users/charles/Desktop/MMKVDemo/app/build/intermediates/cmake/SharedCpp/debug/obj/armeabi/libnative-lib.so"
+    }
+  }
+}

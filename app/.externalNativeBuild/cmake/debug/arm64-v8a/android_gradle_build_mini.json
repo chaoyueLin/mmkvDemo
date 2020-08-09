@@ -1,0 +1,17 @@
+{
+  "buildFiles": [
+    "/Users/charles/Desktop/MMKVDemo/app/CMakeLists.txt",
+    "/Users/charles/Desktop/MMKVDemo/app/../../../Documents/Android/sdk/ndk-r16b/build/cmake/android.toolchain.cmake"
+  ],
+  "cleanCommands": [
+    "/Users/charles/Documents/Android/sdk/cmake/3.10.2.4988404/bin/cmake --build /Users/charles/Desktop/MMKVDemo/app/.externalNativeBuild/cmake/debug/arm64-v8a --target clean"
+  ],
+  "libraries": {
+    "native-lib-Debug-arm64-v8a": {
+      "artifactName": "native-lib",
+      "buildCommand": "/Users/charles/Documents/Android/sdk/cmake/3.10.2.4988404/bin/cmake --build /Users/charles/Desktop/MMKVDemo/app/.externalNativeBuild/cmake/debug/arm64-v8a --target native-lib",
+      "abi": "arm64-v8a",
+      "output": "/Users/charles/Desktop/MMKVDemo/app/build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so"
+    }
+  }
+}

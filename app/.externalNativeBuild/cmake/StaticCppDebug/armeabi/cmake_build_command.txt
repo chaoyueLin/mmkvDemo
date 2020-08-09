@@ -1,0 +1,21 @@
+Executable : /Users/charles/Documents/Android/sdk/cmake/3.10.2.4988404/bin/cmake
+arguments : 
+-H/Users/charles/Desktop/MMKVDemo/app
+-B/Users/charles/Desktop/MMKVDemo/app/.externalNativeBuild/cmake/StaticCppDebug/armeabi
+-DANDROID_ABI=armeabi
+-DANDROID_PLATFORM=android-15
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/Users/charles/Desktop/MMKVDemo/app/build/intermediates/cmake/StaticCpp/debug/obj/armeabi
+-DCMAKE_BUILD_TYPE=Debug
+-DANDROID_NDK=/Users/charles/Documents/Android/sdk/ndk-r16b
+-DCMAKE_CXX_FLAGS=-std=c++1z -fno-exceptions
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_ANDROID_ARCH_ABI=armeabi
+-DCMAKE_SYSTEM_VERSION=15
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_ANDROID_NDK=/Users/charles/Documents/Android/sdk/ndk-r16b
+-DCMAKE_TOOLCHAIN_FILE=/Users/charles/Documents/Android/sdk/ndk-r16b/build/cmake/android.toolchain.cmake
+-G Ninja
+-DCMAKE_MAKE_PROGRAM=/Users/charles/Documents/Android/sdk/cmake/3.10.2.4988404/bin/ninja
+-DANDROID_STL=c++_static
+jvmArgs : 
+
