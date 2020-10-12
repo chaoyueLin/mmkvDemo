@@ -1,0 +1,3 @@
+D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/armeabi-v7a/CMakeFiles/mmkv.dir
+D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/armeabi-v7a/CMakeFiles/rebuild_cache.dir

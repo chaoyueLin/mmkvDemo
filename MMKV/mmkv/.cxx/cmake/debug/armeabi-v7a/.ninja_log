@@ -1,0 +1,16 @@
+# ninja log v5
+25	249	624003933	CMakeFiles/mmkv.dir/src/main/cpp/PBUtility.cpp.o	db5bbb9587c1df32
+100	263	624003933	CMakeFiles/mmkv.dir/src/main/cpp/InterProcessLock.cpp.o	ace96bb34f654af2
+120	280	624003933	CMakeFiles/mmkv.dir/src/main/cpp/aes/openssl/aes_core.c.o	2251ace613012767
+72	308	624003933	CMakeFiles/mmkv.dir/src/main/cpp/MMBuffer.cpp.o	d706a24ad6b63da
+196	319	624003933	CMakeFiles/mmkv.dir/src/main/cpp/aes/openssl/aes_cfb.c.o	b023f300495c165a
+174	339	624003933	CMakeFiles/mmkv.dir/src/main/cpp/ThreadLock.cpp.o	1ac46f6d69be6032
+220	355	624003933	CMakeFiles/mmkv.dir/src/main/cpp/aes/openssl/cfb128.c.o	ffb4ba91778a8093
+9	469	624003934	CMakeFiles/mmkv.dir/src/main/cpp/CodedInputData.cpp.o	21e86120927be0b4
+48	521	624003934	CMakeFiles/mmkv.dir/src/main/cpp/CodedOutputData.cpp.o	42d92466f1868769
+152	592	624003934	CMakeFiles/mmkv.dir/src/main/cpp/aes/AESCrypt.cpp.o	8bdaad7f395a8976
+133	615	624003934	CMakeFiles/mmkv.dir/src/main/cpp/MmapedFile.cpp.o	61a6218aa4484cf0
+16	674	624003934	CMakeFiles/mmkv.dir/src/main/cpp/native-bridge.cpp.o	a7d8fb46a32b79fe
+33	794	624003934	CMakeFiles/mmkv.dir/src/main/cpp/MiniPBCoder.cpp.o	abed626e0b045a38
+0	936	624003934	CMakeFiles/mmkv.dir/src/main/cpp/MMKV.cpp.o	d79789e07cb5195
+936	1034	624003934	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libmmkv.so	4a14aadbdec8969e

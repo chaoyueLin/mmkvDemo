@@ -1,0 +1,85 @@
+[
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\native-bridge.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\native-bridge.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/native-bridge.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\MMKV.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\MMKV.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/MMKV.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\CodedInputData.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\CodedInputData.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/CodedInputData.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\CodedOutputData.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\CodedOutputData.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/CodedOutputData.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\PBUtility.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\PBUtility.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/PBUtility.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\MiniPBCoder.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\MiniPBCoder.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/MiniPBCoder.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\MMBuffer.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\MMBuffer.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/MMBuffer.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\InterProcessLock.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\InterProcessLock.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/InterProcessLock.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\MmapedFile.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\MmapedFile.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/MmapedFile.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\ThreadLock.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\ThreadLock.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/ThreadLock.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-exceptions -fvisibility=hidden -fno-unwind-tables -fno-asynchronous-unwind-tables -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\aes\\AESCrypt.cpp.o -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\aes\\AESCrypt.cpp\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/aes/AESCrypt.cpp"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\aes\\openssl\\aes_cfb.c.o   -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\aes\\openssl\\aes_cfb.c\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/aes/openssl/aes_cfb.c"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\aes\\openssl\\aes_core.c.o   -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\aes\\openssl\\aes_core.c\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/aes/openssl/aes_core.c"
+},
+
+{
+  "directory": "D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/release/x86",
+  "command": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\21.0.6113669\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android21 --gcc-toolchain=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dmmkv_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -O2 -DNDEBUG  -fPIC   -o CMakeFiles\\mmkv.dir\\src\\main\\cpp\\aes\\openssl\\cfb128.c.o   -c \"D:\\My Documents\\Desktop\\MMKV\\mmkv\\src\\main\\cpp\\aes\\openssl\\cfb128.c\"",
+  "file": "D:/My Documents/Desktop/MMKV/mmkv/src/main/cpp/aes/openssl/cfb128.c"
+}
+]
