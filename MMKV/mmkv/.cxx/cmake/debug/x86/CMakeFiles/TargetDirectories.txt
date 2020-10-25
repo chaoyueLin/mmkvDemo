@@ -1,3 +1,0 @@
-D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/debug/x86/CMakeFiles/mmkv.dir
-D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/debug/x86/CMakeFiles/edit_cache.dir
-D:/My Documents/Desktop/MMKV/mmkv/.cxx/cmake/debug/x86/CMakeFiles/rebuild_cache.dir
