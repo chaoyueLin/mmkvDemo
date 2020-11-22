@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/Users/charles/Desktop/MMKVDemo/app/.externalNativeBuild/cmake/StaticCppDebug/armeabi",
-  "command": "/Users/charles/Documents/Android/sdk/ndk-r16b/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=armv5te-none-linux-androideabi --gcc-toolchain=/Users/charles/Documents/Android/sdk/ndk-r16b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64 --sysroot=/Users/charles/Documents/Android/sdk/ndk-r16b/sysroot  -Dnative_lib_EXPORTS -isystem /Users/charles/Documents/Android/sdk/ndk-r16b/sources/cxx-stl/llvm-libc++/include -isystem /Users/charles/Documents/Android/sdk/ndk-r16b/sources/android/support/include -isystem /Users/charles/Documents/Android/sdk/ndk-r16b/sources/cxx-stl/llvm-libc++abi/include  -isystem /Users/charles/Documents/Android/sdk/ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=15 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11 -std=c++1z -fno-exceptions -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o -c /Users/charles/Desktop/MMKVDemo/app/src/main/cpp/native-lib.cpp",
-  "file": "/Users/charles/Desktop/MMKVDemo/app/src/main/cpp/native-lib.cpp"
-}
-]
