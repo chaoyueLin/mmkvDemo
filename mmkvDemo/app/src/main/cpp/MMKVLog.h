@@ -1,52 +1,39 @@
-//
+/*
 // Created by Charles on 19/7/7.
-//
+日志宏定义，使用android/log.h
+**/
 
-#ifndef MMKVDEMO_MMKVLOG_H
-#define MMKVDEMO_MMKVLOG_H
+
+#ifndef MMKV_MMKVLOG_H
+#define MMKV_MMKVLOG_H
 
 #include <android/log.h>
-#include <cstdint>
 #include <cstring>
 #include <errno.h>
 
-enum MMKVLogLevel:uint32_t {
-    MMKVLogDebug=0,
-    MMKVLogInfo=1,
-    MMKVLogWarning=2,
-    MMKVLogError=3,
-};
-
+// enable logging
 #define ENABLE_MMKV_LOG
 
 #ifdef ENABLE_MMKV_LOG
 
-extern bool g_isLogRedirecting;
-extern MMKVLogLevel g_currentlogLevel;
-
-#define __filename__ (strrchr(__FILE__, '/') + 1)
+#define APPNAME "MMKV"
 
 #define MMKVError(format, ...)                                                                     \
-    _MMKVLogWithLevel(MMKVLogError, __filename__, __func__, __LINE__, format, ##__VA_ARGS__)
-
+    __android_log_print(ANDROID_LOG_ERROR, APPNAME, format, ##__VA_ARGS__)
 #define MMKVWarning(format, ...)                                                                   \
-    _MMKVLogWithLevel(MMKVLogWarning, __filename__, __func__, __LINE__, format, ##__VA_ARGS__)
-
-#define MMKVInfo(format, ...)                                                                      \
-    _MMKVLogWithLevel(MMKVLogInfo, __filename__, __func__, __LINE__, format, ##__VA_ARGS__)
+    __android_log_print(ANDROID_LOG_WARN, APPNAME, format, ##__VA_ARGS__)
+#define MMKVInfo(format, ...) __android_log_print(ANDROID_LOG_INFO, APPNAME, format, ##__VA_ARGS__)
 
 #ifndef NDEBUG
 #define MMKVDebug(format, ...)                                                                     \
-    _MMKVLogWithLevel(MMKVLogDebug, __filename__, __func__, __LINE__, format, ##__VA_ARGS__)
+    __android_log_print(ANDROID_LOG_DEBUG, APPNAME, format, ##__VA_ARGS__)
 #else
 #define MMKVDebug(format, ...)                                                                     \
     {}
 #endif
 
-void _MMKVLogWithLevel(
-        MMKVLogLevel level,const  char *file,const char *func,int line,const char *format,...);
-
 #else
+
 #define MMKVError(format, ...)                                                                     \
     {}
 #define MMKVWarning(format, ...)                                                                   \
@@ -56,4 +43,6 @@ void _MMKVLogWithLevel(
 #define MMKVDebug(format, ...)                                                                     \
     {}
 
-#endif //MMKVDEMO_MMKVLOG_H
+#endif
+
+#endif //MMKV_MMKVLOG_H

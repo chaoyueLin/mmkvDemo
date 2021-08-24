@@ -8,7 +8,7 @@ android {
         config {
             keyAlias 'key0'
             keyPassword 'mmkv.wxg'
-            storeFile file('/Users/lingol/AndroidStudioProjects/key1')
+            storeFile file('../debug.kestore')
             storePassword 'mmkv.wxg'
         }
     }
@@ -35,6 +35,7 @@ android {
             jniDebuggable true
         }
     }
+    ndkVersion '21.0.6113669'
 }
 
 
