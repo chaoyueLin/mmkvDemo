@@ -1,6 +1,7 @@
-//
+/**
 // Created by Charles on 19/7/8.
-//
+// 分配缓存
+**/
 
 #include "MMBuffer.h"
 #include <cstdlib>
@@ -13,11 +14,17 @@ MMBuffer::MMBuffer(size_t length):ptr(nullptr),size(length),isNoCopy(MMBufferCop
     }
 }
 
+/**
+ * 把原来的缓存数据拷贝到新的对象
+ * @param source
+ * @param length
+ * @param noCopy
+ */
 MMBuffer::MMBuffer(void *source,size_t length,MMBufferCopyFlag noCopy)
         :ptr(source),size(length),isNoCopy(noCopy){
     if(isNoCopy==MMBufferCopy){
         ptr=malloc(size);
-        //复制
+
         memcpy(ptr,source,size);
     }
 }
