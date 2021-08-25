@@ -1,6 +1,14 @@
-//
+/**
 // Created by Charles on 19/7/22.
-//
+// mmap，mmkv的核心，分两种,这里可研究下有啥区别
+ 1.mmap_file是映射文件
+    1)open
+    2)mmap
+ 2.mmap_ashmem是映射匿名共享内存
+    1）open
+    2)ioctl
+    3)mmap
+**/
 
 #include "MmapedFile.h"
 #include "MMBuffer.h"
