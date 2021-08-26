@@ -1,6 +1,7 @@
-//
+/**
 // Created by Charles on 19/7/20.
-//
+//存储数据，自定义小端的4个字节的int,8个字节的int
+*/
 
 #ifndef MMKVDEMO_CODEDOUTPUTDATA_H
 #define MMKVDEMO_CODEDOUTPUTDATA_H

@@ -15,6 +15,11 @@ union Converter{
     P second;
 };
 
+/**
+ * 把double转成int64_t类型
+ * @param v
+ * @return
+ */
 static inline int64_t  Float64ToInt64(double v){
     Converter<double ,int64_t > converter;
     converter.first=v;
