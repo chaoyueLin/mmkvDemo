@@ -1,6 +1,7 @@
-//
+/**
 // Created by Charles on 19/7/15.
-//
+**进程的锁参考的是线程的锁，不过当从共享锁到排斥锁，需要先解锁，再加锁
+**/
 
 #include "InterProcessLock.h"
 #include "MMKVLog.h"
@@ -9,14 +10,15 @@
 static short LockType2FlockType(LockType lockType){
     switch (lockType){
         case SharedLockType:
+            //文件读锁
             return F_RDLCK;
         case ExclusiveLockType:
+            //文件写锁
             return F_WRLCK;
     }
 }
 
 FileLock::FileLock(int fd) :m_fd(fd),m_shareLockCount(0),m_exclusiveLockCount(0){
-    //这些设置保证对整个文件加锁
     m_lockInfo.l_type=F_WRLCK;
     m_lockInfo.l_start=0;
     m_lockInfo.l_whence=SEEK_SET;
@@ -44,12 +46,12 @@ bool FileLock::doLock(LockType lockType, int cmd) {
         if(m_exclusiveLockCount>1){
             return true;
         }
-        // prevent deadlock
+        // 排斥锁当有共享锁时需要解锁
         if(m_shareLockCount>0){
             unLockFirstIfNeeded=true;
         }
     }
-
+    //获取到文件写锁
     m_lockInfo.l_type=LockType2FlockType(lockType);
     //这里加排他锁前先把共享锁给释放掉
     if(unLockFirstIfNeeded){
@@ -60,6 +62,7 @@ bool FileLock::doLock(LockType lockType, int cmd) {
         }
         // lets be gentleman: unlock my shared-lock to prevent deadlock
         auto type=m_lockInfo.l_type;
+        //先解锁
         m_lockInfo.l_type=F_UNLCK;
         ret =fcntl(m_fd,F_SETLK,&m_lockInfo);
         if(ret!=0){

@@ -75,6 +75,7 @@ size_t MiniPBCoder::prepareObjectForEncode(const std::string &str) {
         encodeItem->value.strValue=&str;
         encodeItem->valueSize= static_cast<int32_t >(str.size());
     }
+    //数据和数据的大小
     encodeItem->compiledSize=pbRawVarint32Size(encodeItem->valueSize)+encodeItem->valueSize;
     return index;
 }
@@ -166,7 +167,6 @@ MMBuffer MiniPBCoder::getEncodeData(const unordered_map<string, MMBuffer> &map) 
     if (oItem && oItem->compiledSize > 0) {
         m_outputBuffer = new MMBuffer(oItem->compiledSize);
         m_outputData = new CodedOutputData(m_outputBuffer->getPtr(), m_outputBuffer->length());
-
         writeRootObject();
     }
 

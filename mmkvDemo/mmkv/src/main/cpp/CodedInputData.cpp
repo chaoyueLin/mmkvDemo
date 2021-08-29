@@ -86,13 +86,20 @@ MMBuffer CodedInputData::readData() {
         return MMBuffer(0);
     }
 }
-//
+/**
+ * 读取数据，用0x80代入执行很好理解。跟[CodedOutputData]的writeRawVarint32是对称的
+ * @return
+ */
 int32_t CodedInputData::readRawVarint32() {
+    //用int8_t读取，不是uint8_t
     int8_t tmp = this->readRawByte();
+    //第8位是0
     if (tmp >= 0) {
         return tmp;
     }
+    //需要用int32_t存储7位
     int32_t result = tmp & 0x7f;
+    //再取值7位
     if ((tmp = this->readRawByte()) >= 0) {
         result |= tmp << 7;
     } else {
