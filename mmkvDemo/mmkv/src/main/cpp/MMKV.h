@@ -1,21 +1,5 @@
 /*
- * Tencent is pleased to support the open source community by making
- * MMKV available.
- *
- * Copyright (C) 2018 THL A29 Limited, a Tencent company.
- * All rights reserved.
- *
- * Licensed under the BSD 3-Clause License (the "License"); you may not use
- * this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- *       https://opensource.org/licenses/BSD-3-Clause
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+
  */
 
 #ifndef MMKV_MMKV_H
@@ -38,8 +22,7 @@ class AESCrypt;
 enum MMKVMode : uint32_t {
     MMKV_SINGLE_PROCESS = 0x1,
     MMKV_MULTI_PROCESS = 0x2,
-    CONTEXT_MODE_MULTI_PROCESS = 0x4, // in case someone mistakenly pass Context.MODE_MULTI_PROCESS
-    MMKV_ASHMEM = 0x8,
+    MMKV_ASHMEM = 0x4,
 };
 
 class MMKV {
@@ -55,7 +38,6 @@ class MMKV {
     MmapedFile *m_ashmemFile;
 
     bool m_needLoadFromFile;
-    bool m_hasFullWriteback;
 
     uint32_t m_crcDigest;
     MmapedFile m_metaFile;
@@ -107,10 +89,9 @@ class MMKV {
 
 public:
     MMKV(const std::string &mmapID,
-         int size,
-         MMKVMode mode,
-         std::string *cryptKey,
-         std::string *relativePath);
+         int size = DEFAULT_MMAP_SIZE,
+         MMKVMode mode = MMKV_SINGLE_PROCESS,
+         std::string *cryptKey = nullptr);
 
     MMKV(const std::string &mmapID,
          int ashmemFD,
@@ -129,8 +110,7 @@ public:
     static MMKV *mmkvWithID(const std::string &mmapID,
                             int size = DEFAULT_MMAP_SIZE,
                             MMKVMode mode = MMKV_SINGLE_PROCESS,
-                            std::string *cryptKey = nullptr,
-                            std::string *relativePath = nullptr);
+                            std::string *cryptKey = nullptr);
 
     static MMKV *mmkvWithAshmemFD(const std::string &mmapID,
                                   int fd,
@@ -192,10 +172,6 @@ public:
 
     bool getVectorForKey(const std::string &key, std::vector<std::string> &result);
 
-    size_t getValueSizeForKey(const std::string &key, bool acutalSize);
-
-    int32_t writeValueToBuffer(const std::string &key, void *ptr, int32_t size);
-
     bool containsKey(const std::string &key);
 
     size_t count();
@@ -210,17 +186,7 @@ public:
 
     void clearAll();
 
-    // MMKV's size won't reduce after deleting key-values
-    // call this method after lots of deleting f you care about disk usage
-    // note that `clearAll` has the similar effect of `trim`
-    void trim();
-
-    // call this method if the instance is no longer needed in the near future
-    // any subsequent call to the instance is undefined behavior
-    void close();
-
-    // call this method if you are facing memory-warning
-    // any subsequent call to the instance will load all key-values from file again
+    // call on memory warning
     void clearMemoryState();
 
     // you don't need to call this, really, I mean it

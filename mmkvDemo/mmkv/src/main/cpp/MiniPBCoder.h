@@ -1,12 +1,13 @@
-//
+/**
 // Created by Charles on 19/7/21.
-//
+输入输出资源管理类
+**/
 
-#ifndef MMKVDEMO_MINIPBCODER_H
-#define MMKVDEMO_MINIPBCODER_H
+#ifndef MMKV_MINIPBCODER_H
+#define MMKV_MINIPBCODER_H
 
+#include "MMBuffer.h"
 #include "MMKVLog.h"
-#include <MMBuffer.h>
 #include "PBEncodeItem.hpp"
 #include <cstdint>
 #include <string>
@@ -14,6 +15,7 @@
 #include <vector>
 
 class CodedInputData;
+
 class CodedOutputData;
 
 class MiniPBCoder {
@@ -25,43 +27,53 @@ class MiniPBCoder {
     std::vector<PBEncodeItem> *m_encodeItems;
 
 private:
-
     MiniPBCoder();
+
     MiniPBCoder(const MMBuffer *inputBuffer);
+
     ~MiniPBCoder();
 
     void writeRootObject();
+
     size_t prepareObjectForEncode(const std::string &str);
+
     size_t prepareObjectForEncode(const MMBuffer &buffer);
+
     size_t prepareObjectForEncode(const std::vector<std::string> &vector);
-    size_t prepareObjectForEncode(const std::unordered_map<std::string,MMBuffer> &map);
+
+    size_t prepareObjectForEncode(const std::unordered_map<std::string, MMBuffer> &map);
 
     MMBuffer getEncodeData(const std::string &str);
+
     MMBuffer getEncodeData(const MMBuffer &buffer);
+
     MMBuffer getEncodeData(const std::vector<std::string> &vector);
+
     MMBuffer getEncodeData(const std::unordered_map<std::string, MMBuffer> &map);
 
     std::string decodeOneString();
+
     MMBuffer decodeOneBytes();
+
     std::vector<std::string> decodeOneSet();
-    void decodeOneMap(std::unordered_map<std::string, MMBuffer> &dic, size_t size = 0);
+
+    std::unordered_map<std::string, MMBuffer> decodeOneMap(size_t size = 0);
 
 public:
-    template <typename T>
+    template<typename T>
     static MMBuffer encodeDataWithObject(const T &obj) {
         MiniPBCoder pbcoder;
         return pbcoder.getEncodeData(obj);
     }
 
     static std::string decodeString(const MMBuffer &oData);
+
     static MMBuffer decodeBytes(const MMBuffer &oData);
+
     static std::vector<std::string> decodeSet(const MMBuffer &oData);
-    static void decodeMap(std::unordered_map<std::string, MMBuffer> &dic,
-                          const MMBuffer &oData,
-                          size_t size = 0);
+
+    static std::unordered_map<std::string, MMBuffer> decodeMap(const MMBuffer &oData,
+                                                               size_t size = 0);
 };
 
-
-
-
-#endif //MMKVDEMO_MINIPBCODER_H
+#endif //MMKV_MINIPBCODER_H

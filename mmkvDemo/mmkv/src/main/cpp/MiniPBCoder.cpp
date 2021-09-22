@@ -1,6 +1,7 @@
-//
+/**
 // Created by Charles on 19/7/21.
-//
+输入输出资源管理类
+**/
 
 #include "MiniPBCoder.h"
 #include "CodedInputData.h"
@@ -15,68 +16,74 @@
 using namespace std;
 
 MiniPBCoder::MiniPBCoder() {
-    m_inputBuffer= nullptr;
-    m_inputData= nullptr;
-    m_outputBuffer= nullptr;
-    m_outputData= nullptr;
-    m_encodeItems= nullptr;
+    m_inputBuffer = nullptr;
+    m_inputData = nullptr;
+
+    m_outputBuffer = nullptr;
+    m_outputData = nullptr;
+    m_encodeItems = nullptr;
 }
 
 MiniPBCoder::~MiniPBCoder() {
-    if(m_inputData){
+    if (m_inputData) {
         delete m_inputData;
     }
-
-    if(m_outputData){
-        delete m_outputData;
-    }
-
-    if(m_outputBuffer){
+    if (m_outputBuffer) {
         delete m_outputBuffer;
     }
-
-    if(m_encodeItems){
+    if (m_outputData) {
+        delete m_outputData;
+    }
+    if (m_encodeItems) {
         delete m_encodeItems;
     }
 }
 
-MiniPBCoder::MiniPBCoder(const MMBuffer *inputBuffer):MiniPBCoder() {
-    m_inputBuffer=inputBuffer;
-    m_inputData=
-            new CodedInputData(m_inputBuffer->getPtr(), static_cast<int32_t>(m_inputBuffer->length()));
+MiniPBCoder::MiniPBCoder(const MMBuffer *inputBuffer) : MiniPBCoder() {
+    m_inputBuffer = inputBuffer;
+    m_inputData =
+            new CodedInputData(m_inputBuffer->getPtr(),
+                               static_cast<int32_t>(m_inputBuffer->length()));
 }
 
+#pragma mark - encode
+
+// write object using prepared m_encodeItems[]
 void MiniPBCoder::writeRootObject() {
-    for(size_t index=0,total=m_encodeItems->size();index<total;index++){
-        PBEncodeItem *encodeItem=&(*m_encodeItems)[index];
-        switch (encodeItem->type){
-            case PBEncodeItemType_String:
+    for (size_t index = 0, total = m_encodeItems->size(); index < total; index++) {
+        PBEncodeItem *encodeItem = &(*m_encodeItems)[index];
+        switch (encodeItem->type) {
+            case PBEncodeItemType_String: {
                 m_outputData->writeString(*(encodeItem->value.strValue));
                 break;
-            case PBEncodeItemType_Data:
+            }
+            case PBEncodeItemType_Data: {
                 m_outputData->writeData(*(encodeItem->value.bufferValue));
                 break;
-            case PBEncodeItemType_Container:
+            }
+            case PBEncodeItemType_Container: {
                 m_outputData->writeRawVarint32(encodeItem->valueSize);
                 break;
-            case PBEncodeItemType_None:
-                MMKVError("%d",encodeItem->type);
+            }
+            case PBEncodeItemType_None: {
+                MMKVError("%d", encodeItem->type);
                 break;
+            }
         }
     }
 }
 
-size_t MiniPBCoder::prepareObjectForEncode(const std::string &str) {
+size_t MiniPBCoder::prepareObjectForEncode(const string &str) {
     m_encodeItems->push_back(PBEncodeItem());
-    PBEncodeItem *encodeItem=&(m_encodeItems->back());
-    size_t index=m_encodeItems->size()-1;
+    PBEncodeItem *encodeItem = &(m_encodeItems->back());
+    size_t index = m_encodeItems->size() - 1;
     {
-        encodeItem->type=PBEncodeItemType_String;
-        encodeItem->value.strValue=&str;
-        encodeItem->valueSize= static_cast<int32_t >(str.size());
+        encodeItem->type = PBEncodeItemType_String;
+        encodeItem->value.strValue = &str;
+        encodeItem->valueSize = static_cast<int32_t>(str.size());
     }
-    //数据和数据的大小
-    encodeItem->compiledSize=pbRawVarint32Size(encodeItem->valueSize)+encodeItem->valueSize;
+    encodeItem->compiledSize = pbRawVarint32Size(encodeItem->valueSize) + encodeItem->valueSize;
+
     return index;
 }
 
@@ -94,71 +101,103 @@ size_t MiniPBCoder::prepareObjectForEncode(const MMBuffer &buffer) {
     return index;
 }
 
-size_t MiniPBCoder::prepareObjectForEncode(const std::vector<std::string> &vector) {
+size_t MiniPBCoder::prepareObjectForEncode(const vector<string> &v) {
     m_encodeItems->push_back(PBEncodeItem());
-    PBEncodeItem *encodeItem =&(m_encodeItems->back());
-    size_t index=m_encodeItems->size()-1;
+    PBEncodeItem *encodeItem = &(m_encodeItems->back());
+    size_t index = m_encodeItems->size() - 1;
     {
-        encodeItem->type=PBEncodeItemType_Container;
-        encodeItem->value.strValue= nullptr;
-        for(const auto &str:vector){
-            size_t  itemIndex=prepareObjectForEncode(str);
-            if(itemIndex<m_encodeItems->size()){
-                (*m_encodeItems)[index].valueSize+=(*m_encodeItems)[itemIndex].compiledSize;
+        encodeItem->type = PBEncodeItemType_Container;
+        encodeItem->value.strValue = nullptr;
+
+        for (const auto &str : v) {
+            size_t itemIndex = prepareObjectForEncode(str);
+            if (itemIndex < m_encodeItems->size()) {
+                (*m_encodeItems)[index].valueSize += (*m_encodeItems)[itemIndex].compiledSize;
             }
         }
-        encodeItem=&(*m_encodeItems)[index];
+
+        encodeItem = &(*m_encodeItems)[index];
     }
-    encodeItem->compiledSize=pbRawVarint32Size(encodeItem->valueSize)+encodeItem->valueSize;
+    encodeItem->compiledSize = pbRawVarint32Size(encodeItem->valueSize) + encodeItem->valueSize;
+
     return index;
 }
 
-size_t MiniPBCoder::prepareObjectForEncode(const std::unordered_map<std::string, MMBuffer> &map) {
+size_t MiniPBCoder::prepareObjectForEncode(const unordered_map<string, MMBuffer> &map) {
     m_encodeItems->push_back(PBEncodeItem());
-    PBEncodeItem *encodeItem=&(m_encodeItems->back());
-    size_t index=m_encodeItems->size()-1;
+    PBEncodeItem *encodeItem = &(m_encodeItems->back());
+    size_t index = m_encodeItems->size() - 1;
     {
-        encodeItem->type=PBEncodeItemType_Container;
-        encodeItem->value.strValue= nullptr;
+        encodeItem->type = PBEncodeItemType_Container;
+        encodeItem->value.strValue = nullptr;
 
-        for (const auto &itr:map) {
-            const auto &key=itr.first;
-            const auto &value=itr.second;
-            if(key.length()<=0){
+        for (const auto &itr : map) {
+            const auto &key = itr.first;
+            const auto &value = itr.second;
+            if (key.length() <= 0) {
                 continue;
             }
 
-            size_t keyIndex=prepareObjectForEncode(key);
-            if(keyIndex < m_encodeItems->size()){
-                size_t valueIndex=prepareObjectForEncode(value);
-                if(valueIndex< m_encodeItems->size()){
-                    (*m_encodeItems)[index].valueSize+=(*m_encodeItems)[keyIndex].compiledSize;
-                    (*m_encodeItems)[index].valueSize+=(*m_encodeItems)[valueIndex].compiledSize;
-                }else{
-                    m_encodeItems->pop_back();
+            size_t keyIndex = prepareObjectForEncode(key);
+            if (keyIndex < m_encodeItems->size()) {
+                size_t valueIndex = prepareObjectForEncode(value);
+                if (valueIndex < m_encodeItems->size()) {
+                    (*m_encodeItems)[index].valueSize += (*m_encodeItems)[keyIndex].compiledSize;
+                    (*m_encodeItems)[index].valueSize += (*m_encodeItems)[valueIndex].compiledSize;
+                } else {
+                    m_encodeItems->pop_back(); // pop key
                 }
             }
-
-            encodeItem=&(*m_encodeItems)[index];
         }
-    }
 
-    encodeItem->compiledSize=pbRawVarint32Size(encodeItem->valueSize)+encodeItem->valueSize;
+        encodeItem = &(*m_encodeItems)[index];
+    }
+    encodeItem->compiledSize = pbRawVarint32Size(encodeItem->valueSize) + encodeItem->valueSize;
+
     return index;
 }
 
-MMBuffer MiniPBCoder::getEncodeData(const std::string &str) {
-    m_encodeItems=new vector<PBEncodeItem>();
-    size_t index=prepareObjectForEncode(str);
-    PBEncodeItem *oItem=(index < m_encodeItems->size()) ? &(*m_encodeItems)[index]: nullptr;
-    if(oItem && oItem->compiledSize>0){
-        m_outputBuffer=new MMBuffer(oItem->compiledSize);
-        m_outputData=new CodedOutputData(m_outputBuffer->getPtr(),m_outputBuffer->length());
+MMBuffer MiniPBCoder::getEncodeData(const string &str) {
+    m_encodeItems = new vector<PBEncodeItem>();
+    size_t index = prepareObjectForEncode(str);
+    PBEncodeItem *oItem = (index < m_encodeItems->size()) ? &(*m_encodeItems)[index] : nullptr;
+    if (oItem && oItem->compiledSize > 0) {
+        m_outputBuffer = new MMBuffer(oItem->compiledSize);
+        m_outputData = new CodedOutputData(m_outputBuffer->getPtr(), m_outputBuffer->length());
+
         writeRootObject();
     }
+
     return move(*m_outputBuffer);
 }
 
+MMBuffer MiniPBCoder::getEncodeData(const MMBuffer &buffer) {
+    m_encodeItems = new vector<PBEncodeItem>();
+    size_t index = prepareObjectForEncode(buffer);
+    PBEncodeItem *oItem = (index < m_encodeItems->size()) ? &(*m_encodeItems)[index] : nullptr;
+    if (oItem && oItem->compiledSize > 0) {
+        m_outputBuffer = new MMBuffer(oItem->compiledSize);
+        m_outputData = new CodedOutputData(m_outputBuffer->getPtr(), m_outputBuffer->length());
+
+        writeRootObject();
+    }
+
+    return move(*m_outputBuffer);
+}
+
+MMBuffer MiniPBCoder::getEncodeData(const vector<string> &v) {
+    m_encodeItems = new vector<PBEncodeItem>();
+    size_t index = prepareObjectForEncode(v);
+    PBEncodeItem *oItem = (index < m_encodeItems->size()) ? &(*m_encodeItems)[index] : nullptr;
+    if (oItem && oItem->compiledSize > 0) {
+        m_outputBuffer = new MMBuffer(oItem->compiledSize);
+        m_outputData = new CodedOutputData(m_outputBuffer->getPtr(), m_outputBuffer->length());
+
+        writeRootObject();
+    }
+
+    return move(*m_outputBuffer);
+}
 
 MMBuffer MiniPBCoder::getEncodeData(const unordered_map<string, MMBuffer> &map) {
     m_encodeItems = new vector<PBEncodeItem>();
@@ -167,6 +206,7 @@ MMBuffer MiniPBCoder::getEncodeData(const unordered_map<string, MMBuffer> &map) 
     if (oItem && oItem->compiledSize > 0) {
         m_outputBuffer = new MMBuffer(oItem->compiledSize);
         m_outputData = new CodedOutputData(m_outputBuffer->getPtr(), m_outputBuffer->length());
+
         writeRootObject();
     }
 
@@ -196,7 +236,9 @@ vector<string> MiniPBCoder::decodeOneSet() {
     return v;
 }
 
-void MiniPBCoder::decodeOneMap(unordered_map<string, MMBuffer> &dic, size_t size) {
+unordered_map<string, MMBuffer> MiniPBCoder::decodeOneMap(size_t size) {
+    unordered_map<string, MMBuffer> dic;
+
     if (size == 0) {
         auto length = m_inputData->readInt32();
     }
@@ -211,6 +253,7 @@ void MiniPBCoder::decodeOneMap(unordered_map<string, MMBuffer> &dic, size_t size
             }
         }
     }
+    return dic;
 }
 
 string MiniPBCoder::decodeString(const MMBuffer &oData) {
@@ -223,11 +266,9 @@ MMBuffer MiniPBCoder::decodeBytes(const MMBuffer &oData) {
     return oCoder.decodeOneBytes();
 }
 
-void MiniPBCoder::decodeMap(unordered_map<string, MMBuffer> &dic,
-                            const MMBuffer &oData,
-                            size_t size) {
+unordered_map<string, MMBuffer> MiniPBCoder::decodeMap(const MMBuffer &oData, size_t size) {
     MiniPBCoder oCoder(&oData);
-    oCoder.decodeOneMap(dic, size);
+    return oCoder.decodeOneMap(size);
 }
 
 vector<string> MiniPBCoder::decodeSet(const MMBuffer &oData) {
