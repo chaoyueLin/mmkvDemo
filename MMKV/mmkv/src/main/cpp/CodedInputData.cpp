@@ -27,7 +27,7 @@ using namespace std;
 
 CodedInputData::CodedInputData(const void *oData, int32_t length)
     : m_ptr((uint8_t *) oData), m_size(length), m_position(0) {
-    assert(m_ptr);
+
 }
 
 CodedInputData::~CodedInputData() {

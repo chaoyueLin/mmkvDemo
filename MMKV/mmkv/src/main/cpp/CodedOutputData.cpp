@@ -26,7 +26,7 @@ using namespace std;
 
 CodedOutputData::CodedOutputData(void *ptr, size_t len)
     : m_ptr((uint8_t *) ptr), m_size(len), m_position(0) {
-    assert(m_ptr);
+
 }
 
 CodedOutputData::~CodedOutputData() {
