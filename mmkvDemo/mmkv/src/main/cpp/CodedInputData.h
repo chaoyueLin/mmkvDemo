@@ -1,6 +1,6 @@
 /**
 // Created by Charles on 19/7/17.
-//读取数据。自定义一个字节的int,4个字节的int,8个字节的int
+//读取数据。自定义读取一个字节的int,4个字节的int,8个字节的int
 **/
 
 #ifndef MMKVDEMO_CODEINPUTDATA_H
