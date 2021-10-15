@@ -1,0 +1,4 @@
+include ':testashmemclient'
+include ':sharedmemlib'
+include ':app'
+rootProject.name = "AshmenJniDemo"
