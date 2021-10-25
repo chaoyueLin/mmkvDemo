@@ -30,6 +30,7 @@ static ThreadLock g_instanceLock;
 static std::string g_rootDir;
 
 #define DEFAULT_MMAP_ID "mmkv.default"
+//小端4个字节
 constexpr uint32_t Fixed32Size = pbFixed32Size(0);
 
 static string mappedKVPathWithID(const string &mmapID, MMKVMode mode);
@@ -58,6 +59,7 @@ MMKV::MMKV(const std::string &mmapID, int size, MMKVMode mode, string *cryptKey)
     m_output = nullptr;
 
     if (m_isAshmem) {
+        //匿名共享内存的id需要获取
         m_ashmemFile = new MmapedFile(m_mmapID, static_cast<size_t>(size), MMAP_ASHMEM);
         m_fd = m_ashmemFile->getFd();
     } else {
@@ -72,6 +74,7 @@ MMKV::MMKV(const std::string &mmapID, int size, MMKVMode mode, string *cryptKey)
 
     m_crcDigest = 0;
 
+    //线程共享锁与进程排他锁
     m_sharedProcessLock.m_enable = m_isInterProcess;
     m_exclusiveProcessLock.m_enable = m_isInterProcess;
 
@@ -255,31 +258,36 @@ void MMKV::loadFromFile() {
     }
 
     m_metaInfo.read(m_metaFile.getMemory());
-
+    //通过句柄打开文件
     m_fd = open(m_path.c_str(), O_RDWR | O_CREAT, S_IRWXU);
     if (m_fd < 0) {
         MMKVError("fail to open:%s, %s", m_path.c_str(), strerror(errno));
     } else {
         m_size = 0;
         struct stat st = {0};
+        //获取文件大小
         if (fstat(m_fd, &st) != -1) {
             m_size = static_cast<size_t>(st.st_size);
         }
-        // round up to (n * pagesize)
+        // round up to (n * pagesize)大小重新调整是pagesize的倍数
         if (m_size < DEFAULT_MMAP_SIZE || (m_size % DEFAULT_MMAP_SIZE != 0)) {
             size_t oldSize = m_size;
             m_size = ((m_size / DEFAULT_MMAP_SIZE) + 1) * DEFAULT_MMAP_SIZE;
+            //改变文件大小
             if (ftruncate(m_fd, m_size) != 0) {
                 MMKVError("fail to truncate [%s] to size %zu, %s", m_mmapID.c_str(), m_size,
                           strerror(errno));
                 m_size = static_cast<size_t>(st.st_size);
             }
+            //文件从oldSize开始初始化为0
             zeroFillFile(m_fd, oldSize, m_size - oldSize);
         }
+        //mmap映射
         m_ptr = (char *) mmap(nullptr, m_size, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd, 0);
         if (m_ptr == MAP_FAILED) {
             MMKVError("fail to mmap [%s], %s", m_mmapID.c_str(), strerror(errno));
         } else {
+            //获得大小m_actualSize
             memcpy(&m_actualSize, m_ptr, Fixed32Size);
             MMKVInfo("loading [%s] with %zu size in total, file size is %zu", m_mmapID.c_str(),
                      m_actualSize, m_size);
@@ -289,6 +297,7 @@ void MMKV::loadFromFile() {
                     if (checkFileCRCValid()) {
                         MMKVInfo("loading [%s] with crc %u sequence %u", m_mmapID.c_str(),
                                  m_metaInfo.m_crcDigest, m_metaInfo.m_sequence);
+                        //用MMBuffer保持
                         MMBuffer inputBuffer(m_ptr + Fixed32Size, m_actualSize, MMBufferNoCopy);
                         if (m_crypter) {
                             decryptBuffer(*m_crypter, inputBuffer);
@@ -300,6 +309,7 @@ void MMKV::loadFromFile() {
                     }
                 }
             }
+            //加载不成功，再通过进程锁加载
             if (!loaded) {
                 SCOPEDLOCK(m_exclusiveProcessLock);
 
@@ -321,6 +331,7 @@ void MMKV::loadFromFile() {
 }
 
 void MMKV::loadFromAshmem() {
+    //设置匿名共享内存的指针
     m_metaInfo.read(m_metaFile.getMemory());
 
     if (m_fd < 0 || !m_ashmemFile) {
@@ -329,6 +340,7 @@ void MMKV::loadFromAshmem() {
         m_size = m_ashmemFile->getFileSize();
         m_ptr = (char *) m_ashmemFile->getMemory();
         if (m_ptr != MAP_FAILED) {
+            //m_ptr偏移Fixed32Size得到真正大小
             memcpy(&m_actualSize, m_ptr, Fixed32Size);
             MMKVInfo("loading [%s] with %zu size in total, file size is %zu", m_mmapID.c_str(),
                      m_actualSize, m_size);
@@ -338,6 +350,7 @@ void MMKV::loadFromAshmem() {
                     if (checkFileCRCValid()) {
                         MMKVInfo("loading [%s] with crc %u sequence %u", m_mmapID.c_str(),
                                  m_metaInfo.m_crcDigest, m_metaInfo.m_sequence);
+                        //缓存到MMBuffer
                         MMBuffer inputBuffer(m_ptr + Fixed32Size, m_actualSize, MMBufferNoCopy);
                         if (m_crypter) {
                             decryptBuffer(*m_crypter, inputBuffer);
@@ -1188,11 +1201,23 @@ bool MMKV::isFileValid(const std::string &mmapID) {
     }
 }
 
+/**
+ * 通过id生成路径
+ * @param mmapID
+ * @param mode
+ * @return
+ */
 static string mappedKVPathWithID(const string &mmapID, MMKVMode mode) {
     return (mode & MMKV_ASHMEM) == 0 ? g_rootDir + "/" + mmapID
                                      : string(ASHMEM_NAME_DEF) + "/" + mmapID;
 }
 
+/**
+ * crc文件路径
+ * @param mmapID
+ * @param mode
+ * @return
+ */
 static string crcPathWithID(const string &mmapID, MMKVMode mode) {
     return (mode & MMKV_ASHMEM) == 0 ? g_rootDir + "/" + mmapID + ".crc" : mmapID + ".crc";
 }

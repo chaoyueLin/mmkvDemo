@@ -1,5 +1,6 @@
 //
 // Created by Charles on 19/7/22.
+//匿名共享内存的封装
 //
 
 #ifndef MMKV_MMAPEDFILE_H

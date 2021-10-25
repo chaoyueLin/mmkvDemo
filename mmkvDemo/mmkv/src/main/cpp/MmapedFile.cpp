@@ -48,7 +48,8 @@ MmapedFile::MmapedFile(const std::string &path, size_t size, bool fileType)
                 }
             }
             m_segmentPtr =
-                    (char *) mmap(nullptr, m_segmentSize, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd, 0);
+                    (char *) mmap(nullptr, m_segmentSize, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd,
+                                  0);
             if (m_segmentPtr == MAP_FAILED) {
                 MMKVError("fail to mmap [%s], %s", m_name.c_str(), strerror(errno));
                 close(m_fd);
@@ -83,22 +84,30 @@ MmapedFile::MmapedFile(const std::string &path, size_t size, bool fileType)
     }
 }
 
+/**
+ * 通过id打开匿名共享内存
+ * @param ashmemFD
+ */
 MmapedFile::MmapedFile(int ashmemFD)
-        : m_name(""), m_fd(ashmemFD), m_segmentPtr(nullptr), m_segmentSize(0), m_fileType(MMAP_ASHMEM) {
+        : m_name(""), m_fd(ashmemFD), m_segmentPtr(nullptr), m_segmentSize(0),
+          m_fileType(MMAP_ASHMEM) {
     if (m_fd < 0) {
         MMKVError("fd %d invalid", m_fd);
     } else {
         char name[ASHMEM_NAME_LEN] = {0};
+        //获取匿名共享内存的名字
         if (ioctl(m_fd, ASHMEM_GET_NAME, name) != 0) {
             MMKVError("fail to get ashmem name:%d, %s", m_fd, strerror(errno));
         } else {
             m_name = string(name);
+            //获取匿名共享内存的大小
             int size = ioctl(m_fd, ASHMEM_GET_SIZE, nullptr);
             if (size < 0) {
                 MMKVError("fail to get ashmem size:%s, %s", m_name.c_str(), strerror(errno));
             } else {
                 m_segmentSize = static_cast<size_t>(size);
                 MMKVInfo("ashmem verified, name:%s, size:%zu", m_name.c_str(), m_segmentSize);
+                //映射为m_segmentPtr
                 m_segmentPtr = (char *) mmap(nullptr, m_segmentSize, PROT_READ | PROT_WRITE,
                                              MAP_SHARED, m_fd, 0);
                 if (m_segmentPtr == MAP_FAILED) {
@@ -112,6 +121,7 @@ MmapedFile::MmapedFile(int ashmemFD)
 
 MmapedFile::~MmapedFile() {
     if (m_segmentPtr != MAP_FAILED && m_segmentPtr != nullptr) {
+        //解除内存映射
         munmap(m_segmentPtr, m_segmentSize);
         m_segmentPtr = nullptr;
     }
@@ -123,6 +133,11 @@ MmapedFile::~MmapedFile() {
 
 #pragma mark - file
 
+/**
+ * 检查文件是否存在
+ * @param nsFilePath
+ * @return
+ */
 bool isFileExist(const string &nsFilePath) {
     if (nsFilePath.empty()) {
         return false;
@@ -132,6 +147,11 @@ bool isFileExist(const string &nsFilePath) {
     return lstat(nsFilePath.c_str(), &temp) == 0;
 }
 
+/**
+ * 生成文件路径
+ * @param path
+ * @return
+ */
 bool mkPath(char *path) {
     struct stat sb = {};
     bool done = false;
@@ -194,11 +214,18 @@ MMBuffer *readWholeFile(const char *path) {
     return buffer;
 }
 
+/**
+ * 文件从startPos开始都初始化为0
+ * @param fd
+ * @param startPos
+ * @param size
+ * @return
+ */
 bool zeroFillFile(int fd, size_t startPos, size_t size) {
     if (fd < 0) {
         return false;
     }
-
+    //移动文件
     if (lseek(fd, startPos, SEEK_SET) < 0) {
         MMKVError("fail to lseek fd[%d], error:%s", fd, strerror(errno));
         return false;
@@ -206,6 +233,7 @@ bool zeroFillFile(int fd, size_t startPos, size_t size) {
 
     static const char zeros[4096] = {0};
     while (size >= sizeof(zeros)) {
+        //重写文件,每次4K
         if (write(fd, zeros, sizeof(zeros)) < 0) {
             MMKVError("fail to write fd[%d], error:%s", fd, strerror(errno));
             return false;
