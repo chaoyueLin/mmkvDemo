@@ -11,7 +11,7 @@
 #include <cstring>
 
 struct MMKVMetaInfo{
-    uint32_t m_crcDigest=0;
+    uint32_t m_crcDigest=0;//crc校验的数据
     uint32_t m_version=1;
     uint32_t m_sequence=0;
 

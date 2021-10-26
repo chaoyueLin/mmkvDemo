@@ -144,11 +144,12 @@ bool mkPath(char *path) {
     struct stat sb = {};
     bool done = false;
     char *slash = path;
-
+    MMKVInfo("mkPath: %s",slash);
     while (!done) {
         slash += strspn(slash, "/");
+        MMKVInfo("mkPath strspn: %s",slash);
         slash += strcspn(slash, "/");
-
+        MMKVInfo("mkPath strcspn: %s",slash);
         done = (*slash == '\0');
         *slash = '\0';
 

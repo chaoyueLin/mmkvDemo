@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         testMMKV("testAES", "Tencent MMKV", false);
-        testAshmem();
+//        testAshmem();
 //        testReKey();
 
 //        KotlinUsecaseKt.kotlinFunctionalTest();

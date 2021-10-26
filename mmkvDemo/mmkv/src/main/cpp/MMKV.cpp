@@ -167,6 +167,7 @@ void initialize() {
 }
 
 void MMKV::initializeMMKV(const std::string &rootDir) {
+    //线程安全,一个线程初始化一次
     static pthread_once_t once_control = PTHREAD_ONCE_INIT;
     pthread_once(&once_control, initialize);
 
@@ -184,7 +185,7 @@ MMKV *MMKV::mmkvWithID(const std::string &mmapID, int size, MMKVMode mode, strin
         return nullptr;
     }
     SCOPEDLOCK(g_instanceLock);
-
+    //在缓存中查找
     auto itr = g_instanceDic->find(mmapID);
     if (itr != g_instanceDic->end()) {
         MMKV *kv = itr->second;
@@ -213,6 +214,9 @@ MMKV *MMKV::mmkvWithAshmemFD(const string &mmapID, int fd, int metaFD, string *c
     return kv;
 }
 
+/**
+ * 退出把缓存都清除
+ */
 void MMKV::onExit() {
     SCOPEDLOCK(g_instanceLock);
 
@@ -273,7 +277,7 @@ void MMKV::loadFromFile() {
         if (m_size < DEFAULT_MMAP_SIZE || (m_size % DEFAULT_MMAP_SIZE != 0)) {
             size_t oldSize = m_size;
             m_size = ((m_size / DEFAULT_MMAP_SIZE) + 1) * DEFAULT_MMAP_SIZE;
-            //改变文件大小
+            //扩容
             if (ftruncate(m_fd, m_size) != 0) {
                 MMKVError("fail to truncate [%s] to size %zu, %s", m_mmapID.c_str(), m_size,
                           strerror(errno));
@@ -282,7 +286,7 @@ void MMKV::loadFromFile() {
             //文件从oldSize开始初始化为0
             zeroFillFile(m_fd, oldSize, m_size - oldSize);
         }
-        //mmap映射
+        //mmap映射，ftruncate只是给file结构体进行了扩容，但是还没有对对应绑定虚拟内存进行扩容，因此需要解开一次映射后，重新mmap一次。
         m_ptr = (char *) mmap(nullptr, m_size, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd, 0);
         if (m_ptr == MAP_FAILED) {
             MMKVError("fail to mmap [%s], %s", m_mmapID.c_str(), strerror(errno));
@@ -292,27 +296,30 @@ void MMKV::loadFromFile() {
             MMKVInfo("loading [%s] with %zu size in total, file size is %zu", m_mmapID.c_str(),
                      m_actualSize, m_size);
             bool loaded = false;
+            //已有数据
             if (m_actualSize > 0) {
                 if (m_actualSize < m_size && m_actualSize + Fixed32Size <= m_size) {
+                    //校验数据没有异常
                     if (checkFileCRCValid()) {
                         MMKVInfo("loading [%s] with crc %u sequence %u", m_mmapID.c_str(),
                                  m_metaInfo.m_crcDigest, m_metaInfo.m_sequence);
                         //用MMBuffer保持
                         MMBuffer inputBuffer(m_ptr + Fixed32Size, m_actualSize, MMBufferNoCopy);
                         if (m_crypter) {
+                            //解密
                             decryptBuffer(*m_crypter, inputBuffer);
                         }
                         m_dic = MiniPBCoder::decodeMap(inputBuffer);
+                        //
                         m_output = new CodedOutputData(m_ptr + Fixed32Size + m_actualSize,
                                                        m_size - Fixed32Size - m_actualSize);
                         loaded = true;
                     }
                 }
             }
-            //加载不成功，再通过进程锁加载
+            //没有数据的处理
             if (!loaded) {
                 SCOPEDLOCK(m_exclusiveProcessLock);
-
                 if (m_actualSize > 0) {
                     writeAcutalSize(0);
                 }
@@ -431,7 +438,11 @@ void MMKV::partialLoadFromFile() {
     loadFromFile();
 }
 
+/**
+ * 校验数据
+ */
 void MMKV::checkLoadData() {
+    //只从本地加载一次
     if (m_needLoadFromFile) {
         SCOPEDLOCK(m_sharedProcessLock);
 
@@ -1208,12 +1219,13 @@ bool MMKV::isFileValid(const std::string &mmapID) {
  * @return
  */
 static string mappedKVPathWithID(const string &mmapID, MMKVMode mode) {
+    //匿名共享内存实际就是驱动目录下的一个内存文件地址
     return (mode & MMKV_ASHMEM) == 0 ? g_rootDir + "/" + mmapID
                                      : string(ASHMEM_NAME_DEF) + "/" + mmapID;
 }
 
 /**
- * crc文件路径
+ * crc文件路径这个crc文件实际上用于保存crc数据校验key，避免出现传输异常的数据进行保存了。
  * @param mmapID
  * @param mode
  * @return

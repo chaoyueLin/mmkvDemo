@@ -28,6 +28,7 @@ const int DEFAULT_MMAP_SIZE = getpagesize();
 MmapedFile::MmapedFile(const std::string &path, size_t size, bool fileType)
         : m_name(path), m_fd(-1), m_segmentPtr(nullptr), m_segmentSize(0), m_fileType(fileType) {
     if (m_fileType == MMAP_FILE) {
+        //普通的内存文件进行映射到内存
         m_fd = open(m_name.c_str(), O_RDWR | O_CREAT, S_IRWXU);
         if (m_fd < 0) {
             MMKVError("fail to open:%s, %s", m_name.c_str(), strerror(errno));
@@ -38,6 +39,7 @@ MmapedFile::MmapedFile(const std::string &path, size_t size, bool fileType)
             }
             if (m_segmentSize < DEFAULT_MMAP_SIZE) {
                 m_segmentSize = static_cast<size_t>(DEFAULT_MMAP_SIZE);
+                //ftruncate系统调用进行扩容并且从0开始初始化为0
                 if (ftruncate(m_fd, m_segmentSize) != 0 || !zeroFillFile(m_fd, 0, m_segmentSize)) {
                     MMKVError("fail to truncate [%s] to size %zu, %s", m_name.c_str(),
                               m_segmentSize, strerror(errno));
@@ -47,6 +49,7 @@ MmapedFile::MmapedFile(const std::string &path, size_t size, bool fileType)
                     return;
                 }
             }
+
             m_segmentPtr =
                     (char *) mmap(nullptr, m_segmentSize, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd,
                                   0);
@@ -58,6 +61,7 @@ MmapedFile::MmapedFile(const std::string &path, size_t size, bool fileType)
             }
         }
     } else {
+        //通过Ashmem驱动映射一段共享匿名内存
         m_fd = open(ASHMEM_NAME_DEF, O_RDWR);
         if (m_fd < 0) {
             MMKVError("fail to open ashmem:%s, %s", m_name.c_str(), strerror(errno));
@@ -148,7 +152,7 @@ bool isFileExist(const string &nsFilePath) {
 }
 
 /**
- * 生成文件路径
+ * 检验当前路径下每个文件夹是否合法
  * @param path
  * @return
  */
@@ -158,13 +162,16 @@ bool mkPath(char *path) {
     char *slash = path;
 
     while (!done) {
+        //找到第一个非"/",向前移动
         slash += strspn(slash, "/");
+        //找到第一个是“/”,向前移动
         slash += strcspn(slash, "/");
 
         done = (*slash == '\0');
         *slash = '\0';
 
         if (stat(path, &sb) != 0) {
+            //必须保证每一级别的文件都是0777，也就是读写执行全部权限打开。
             if (errno != ENOENT || mkdir(path, 0777) != 0) {
                 MMKVWarning("%s", path);
                 return false;
