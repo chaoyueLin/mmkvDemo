@@ -12,9 +12,9 @@
 #include <string>
 
 class CodedOutputData {
-    uint8_t *m_ptr;
-    size_t m_size;
-    int32_t m_position;
+    uint8_t *m_ptr;//内存指针
+    size_t m_size;//内存区域大小
+    int32_t m_position;//读取到哪个位置
 
 public:
     CodedOutputData(void *ptr, size_t len);

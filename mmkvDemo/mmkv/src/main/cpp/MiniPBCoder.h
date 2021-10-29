@@ -1,6 +1,6 @@
 /**
 // Created by Charles on 19/7/21.
-输入输出资源管理类
+解析Protocol Buffers的对象
 **/
 
 #ifndef MMKV_MINIPBCODER_H

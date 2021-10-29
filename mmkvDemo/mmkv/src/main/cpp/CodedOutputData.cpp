@@ -42,6 +42,10 @@ void CodedOutputData::writeBool(bool value) {
     this->writeRawByte(static_cast<uint8_t>(value ? 1 : 0));
 }
 
+/**
+ * 写完数据m_position保存都是最后
+ * @param value
+ */
 void CodedOutputData::writeString(const string &value) {
     size_t numberOfBytes = value.size();
     this->writeRawVarint32((int32_t) numberOfBytes);

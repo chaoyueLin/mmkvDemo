@@ -489,6 +489,9 @@ void MMKV::checkLoadData() {
     }
 }
 
+/**
+ * 清空数据,并重新读取
+ */
 void MMKV::clearAll() {
     MMKVInfo("cleaning all key-values from [%s]", m_mmapID.c_str());
     SCOPEDLOCK(m_lock);
@@ -565,6 +568,11 @@ void MMKV::clearMemoryState() {
 
 // since we use append mode, when -[setData: forKey:] many times, space may not be enough
 // try a full rewrite to make space
+/**
+ * 扩容
+ * @param newSize
+ * @return
+ */
 bool MMKV::ensureMemorySize(size_t newSize) {
     if (!isFileValid()) {
         MMKVWarning("[%s] file not valid", m_mmapID.c_str());
@@ -583,6 +591,7 @@ bool MMKV::ensureMemorySize(size_t newSize) {
                 return false;
             }
         } else {
+            //扩充大小是按照m_dic，(m_dic.size() + 1) / 2，扩充这么大，相当于*1.5
             size_t futureUsage = newSize * std::max<size_t>(8, (m_dic.size() + 1) / 2);
             // 1. no space for a full rewrite, double it
             // 2. or space is not large enough for future usage, double it to avoid frequently full rewrite
@@ -693,6 +702,12 @@ bool MMKV::removeDataForKey(const std::string &key) {
     return false;
 }
 
+/**
+ * 保存数据都是拼接在最后的，需要key,key的大小，数据，数据的大小
+ * @param data
+ * @param key
+ * @return
+ */
 bool MMKV::appendDataWithKey(const MMBuffer &data, const std::string &key) {
     size_t keyLength = key.length();
     // size needed to encode the key
@@ -872,6 +887,10 @@ bool MMKV::isFileValid() {
 #pragma mark - crc
 
 // assuming m_ptr & m_size is set
+/**
+ * 校验数据是否异常
+ * @return
+ */
 bool MMKV::checkFileCRCValid() {
     if (m_ptr && m_ptr != MAP_FAILED) {
         constexpr int offset = pbFixed32Size(0);
@@ -918,10 +937,17 @@ void MMKV::updateCRCDigest(const uint8_t *ptr, size_t length, bool increaseSeque
 
 #pragma mark - set & get
 
+/**
+ * 存储数据
+ * @param value
+ * @param key
+ * @return
+ */
 bool MMKV::setStringForKey(const std::string &value, const std::string &key) {
     if (key.empty()) {
         return false;
     }
+    //编码压缩内容
     auto data = MiniPBCoder::encodeDataWithObject(value);
     return setDataForKey(std::move(data), key);
 }
