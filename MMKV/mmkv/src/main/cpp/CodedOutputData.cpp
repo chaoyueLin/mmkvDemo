@@ -21,12 +21,12 @@
 #include "CodedOutputData.h"
 #include "MMKVLog.h"
 #include "PBUtility.h"
-
+#include <cassert>
 using namespace std;
 
 CodedOutputData::CodedOutputData(void *ptr, size_t len)
-    : m_ptr((uint8_t *) ptr), m_size(len), m_position(0) {
-
+        : m_ptr((uint8_t *) ptr), m_size(len), m_position(0) {
+    assert(m_ptr);
 }
 
 CodedOutputData::~CodedOutputData() {
@@ -58,6 +58,10 @@ void CodedOutputData::writeBool(bool value) {
     this->writeRawByte(static_cast<uint8_t>(value ? 1 : 0));
 }
 
+/**
+ * 写完数据m_position保存都是最后
+ * @param value
+ */
 void CodedOutputData::writeString(const string &value) {
     size_t numberOfBytes = value.size();
     this->writeRawVarint32((int32_t) numberOfBytes);
@@ -97,13 +101,21 @@ void CodedOutputData::writeRawData(const MMBuffer &data) {
     m_position += numberOfBytes;
 }
 
+/**
+ * 写输入，用0x80带入执行就很好理解
+ * @param value
+ */
 void CodedOutputData::writeRawVarint32(int32_t value) {
     while (true) {
+        //判断是否小于等于0x7f
         if ((value & ~0x7f) == 0) {
+            //类型转换用的uint8_t，不是int8_t
             this->writeRawByte(static_cast<uint8_t>(value));
             return;
         } else {
+            //获取低7位
             this->writeRawByte(static_cast<uint8_t>((value & 0x7F) | 0x80));
+            //再逻辑右移动7位
             value = logicalRightShift32(value, 7);
         }
     }
@@ -121,6 +133,10 @@ void CodedOutputData::writeRawVarint64(int64_t value) {
     }
 }
 
+/**
+ * 转成小端写入，低字节写在低地址
+ * @param value
+ */
 void CodedOutputData::writeRawLittleEndian32(int32_t value) {
     this->writeRawByte(static_cast<uint8_t>((value) &0xff));
     this->writeRawByte(static_cast<uint8_t>((value >> 8) & 0xff));
@@ -138,3 +154,4 @@ void CodedOutputData::writeRawLittleEndian64(int64_t value) {
     this->writeRawByte(static_cast<uint8_t>((value >> 48) & 0xff));
     this->writeRawByte(static_cast<uint8_t>((value >> 56) & 0xff));
 }
+

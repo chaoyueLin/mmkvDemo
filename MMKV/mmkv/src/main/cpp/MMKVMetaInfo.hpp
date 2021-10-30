@@ -26,10 +26,10 @@
 #include <cstring>
 
 struct MMKVMetaInfo {
-    uint32_t m_crcDigest = 0;
+    uint32_t m_crcDigest = 0;//crc校验的数据
     uint32_t m_version = 1;
     uint32_t m_sequence = 0; // full write-back count
-
+    //版本信息写在目标地址
     void write(void *ptr) {
         assert(ptr);
         memcpy(ptr, this, sizeof(MMKVMetaInfo));

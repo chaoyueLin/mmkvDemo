@@ -17,6 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+//匿名共享内存的封装
+//
 
 #ifndef MMKV_MMAPEDFILE_H
 #define MMKV_MMAPEDFILE_H

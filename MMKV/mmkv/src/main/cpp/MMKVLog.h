@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+//日志宏定义，使用android/log.h
 #ifndef MMKV_MMKVLOG_H
 #define MMKV_MMKVLOG_H
 

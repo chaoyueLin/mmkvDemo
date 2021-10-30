@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+//解析protocol buffer的对象
 #ifndef MMKV_MINIPBCODER_H
 #define MMKV_MINIPBCODER_H
 

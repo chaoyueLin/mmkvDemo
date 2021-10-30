@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+//protocol buffer的实现。
 
 #include "MiniPBCoder.h"
 #include "CodedInputData.h"
@@ -57,7 +58,8 @@ MiniPBCoder::~MiniPBCoder() {
 MiniPBCoder::MiniPBCoder(const MMBuffer *inputBuffer) : MiniPBCoder() {
     m_inputBuffer = inputBuffer;
     m_inputData =
-        new CodedInputData(m_inputBuffer->getPtr(), static_cast<int32_t>(m_inputBuffer->length()));
+            new CodedInputData(m_inputBuffer->getPtr(),
+                               static_cast<int32_t>(m_inputBuffer->length()));
 }
 
 #pragma mark - encode

@@ -22,17 +22,18 @@
 #include "MMKVLog.h"
 #include "PBUtility.h"
 #include <limits.h>
+#include <cassert>
 
 using namespace std;
 
 CodedInputData::CodedInputData(const void *oData, int32_t length)
-    : m_ptr((uint8_t *) oData), m_size(length), m_position(0) {
-
+        :m_ptr((uint8_t *)oData),m_size(length),m_position(0){
+    assert(m_ptr);
 }
 
 CodedInputData::~CodedInputData() {
-    m_ptr = nullptr;
-    m_size = 0;
+    m_ptr= nullptr;
+    m_size=0;
 }
 
 double CodedInputData::readDouble() {
@@ -42,17 +43,17 @@ double CodedInputData::readDouble() {
 float CodedInputData::readFloat() {
     return Int32ToFloat32(this->readRawLittleEndian32());
 }
-
+//
 int64_t CodedInputData::readInt64() {
-    int32_t shift = 0;
-    int64_t result = 0;
-    while (shift < 64) {
-        int8_t b = this->readRawByte();
-        result |= (int64_t)(b & 0x7f) << shift;
-        if ((b & 0x80) == 0) {
+    int32_t shift=0;
+    int64_t result=0;
+    while (shift < 64){
+        int8_t b =this->readRawByte();
+        result |=(int64_t) (b& 0x7f) << shift;
+        if((b & 0x80)==0){
             return result;
         }
-        shift += 7;
+        shift+=7;
     }
     MMKVError("InvalidProtocolBuffer malformedInt64");
     return 0;
@@ -100,13 +101,20 @@ MMBuffer CodedInputData::readData() {
         return MMBuffer(0);
     }
 }
-
+/**
+ * 读取数据，用0x80代入执行很好理解。跟[CodedOutputData]的writeRawVarint32是对称的
+ * @return
+ */
 int32_t CodedInputData::readRawVarint32() {
+    //用int8_t读取，不是uint8_t
     int8_t tmp = this->readRawByte();
+    //第8位是0
     if (tmp >= 0) {
         return tmp;
     }
+    //需要用int32_t存储7位
     int32_t result = tmp & 0x7f;
+    //再取值7位
     if ((tmp = this->readRawByte()) >= 0) {
         result |= tmp << 7;
     } else {

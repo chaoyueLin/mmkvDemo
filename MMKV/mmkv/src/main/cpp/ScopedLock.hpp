@@ -62,7 +62,7 @@ public:
         }
     }
 };
-
+//__scopedLock##counter 宏定义,__COUNTER__ 初值是0，每预编译一次其值自己加1
 #define SCOPEDLOCK(lock) _SCOPEDLOCK(lock, __COUNTER__)
 #define _SCOPEDLOCK(lock, counter) __SCOPEDLOCK(lock, counter)
 #define __SCOPEDLOCK(lock, counter) ScopedLock<decltype(lock)> __scopedLock##counter(&lock)

@@ -24,7 +24,9 @@
 #include "MMBuffer.h"
 #include <cstdint>
 #include <string>
-
+/**
+ * //读取数据。自定义读取一个字节的int,4个字节的int,8个字节的int
+ */
 class CodedInputData {
     uint8_t *m_ptr;
     int32_t m_size;

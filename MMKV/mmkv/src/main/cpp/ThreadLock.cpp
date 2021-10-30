@@ -17,7 +17,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/**
+// Created by Charles on 19/7/27.
+* PTHREAD_MUTEX_RECURSIVE
+    * 则该互斥锁会保留锁定计数这一概念。线程首次成功获取互斥锁时，锁定计数会设置为 1。线程每重新锁定该互斥锁一次，锁定计数就增加 1。
+    * 线程每解除锁定该互斥锁一次，锁定计数就减小 1。 锁定计数达到 0 时，该互斥锁即可供其他线程获取。
+    * 如果某个线程尝试解除锁定的互斥锁不是由该线程锁定或者未锁定，则将返回错误。
+**/
 #include "ThreadLock.h"
 #include "MMKVLog.h"
 
