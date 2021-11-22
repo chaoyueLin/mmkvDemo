@@ -3,6 +3,7 @@ package com.example.cmmkv
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import com.example.chaoyue.cmmkv.MMKV
 import com.example.cmmkv.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -16,19 +17,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Example of a call to a native method
-        binding.sampleText.text = stringFromJNI()
+        binding.sampleText.text = MMKV().stringFromJNI()
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    external fun stringFromJNI(): String
 
-    companion object {
-        // Used to load the 'native-lib' library on application startup.
-        init {
-            System.loadLibrary("native-lib")
-        }
-    }
 }

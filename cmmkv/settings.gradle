@@ -1,2 +1,3 @@
 rootProject.name = "CMMKV"
 include ':app'
+include ':cmmkv'
