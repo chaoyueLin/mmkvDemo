@@ -22,6 +22,12 @@ add_library( # Sets the name of the library.
         # Provides a relative path to your source file(s).
         src/main/cpp/MMKVLog.h
         src/main/cpp/native-lib.cpp
+        src/main/cpp/cpplang.hpp
+        src/main/cpp/ThreadLock.h
+        src/main/cpp/ThreadLock.cpp
+        src/main/cpp/ScopedLock.hpp
+        src/main/cpp/InterProcessLock.cpp
+        src/main/cpp/InterProcessLock.h
         )
 
 # Searches for a specified prebuilt library and stores the path as a

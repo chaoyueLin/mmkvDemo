@@ -6,6 +6,7 @@
 #include <android/log.h>
 #include <cstring>
 #include <errno.h>
+#include "cpplang.hpp"
 
 #define ENABLE_MMKV_LOG
 
