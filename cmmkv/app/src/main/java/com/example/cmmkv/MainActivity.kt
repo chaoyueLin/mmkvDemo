@@ -17,7 +17,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Example of a call to a native method
-        binding.sampleText.text = MMKV().stringFromJNI()
+        val mmkv: MMKV = MMKV()
+        binding.sampleText.text = mmkv.stringFromJNI()
+        mmkv.testLog()
+        Thread {
+            mmkv.testLock()
+
+        }.start()
     }
 
 

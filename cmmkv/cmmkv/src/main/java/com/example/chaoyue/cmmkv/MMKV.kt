@@ -14,4 +14,8 @@ class MMKV {
             System.loadLibrary("native-lib")
         }
     }
+
+    external fun testLog()
+
+    external fun testLock()
 }

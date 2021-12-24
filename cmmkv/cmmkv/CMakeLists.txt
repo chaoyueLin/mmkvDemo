@@ -28,6 +28,8 @@ add_library( # Sets the name of the library.
         src/main/cpp/ScopedLock.hpp
         src/main/cpp/InterProcessLock.cpp
         src/main/cpp/InterProcessLock.h
+        src/main/cpp/test/testLock.cpp
+        src/main/cpp/test/testLock.h
         )
 
 # Searches for a specified prebuilt library and stores the path as a
