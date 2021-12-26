@@ -30,6 +30,14 @@ add_library( # Sets the name of the library.
         src/main/cpp/InterProcessLock.h
         src/main/cpp/test/testLock.cpp
         src/main/cpp/test/testLock.h
+        src/main/cpp/PBUtility.h
+        src/main/cpp/PBUtility.cpp
+        src/main/cpp/CodedInputData.h
+        src/main/cpp/CodedInputData.cpp
+        src/main/cpp/CodedOutputData.h
+        src/main/cpp/CodedOutputData.cpp
+        src/main/cpp/MMBuffer.h
+        src/main/cpp/MMBuffer.cpp
         )
 
 # Searches for a specified prebuilt library and stores the path as a
