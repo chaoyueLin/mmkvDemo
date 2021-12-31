@@ -12,7 +12,7 @@ ThreadLock lock_test;
 list<int> test_list;
 
 void Test::testLog() noexcept {
-    MMKVDebug("mmkv", "log");
+    MMKVDebug ("mmkv", "log");
 }
 
 void in_list() {
