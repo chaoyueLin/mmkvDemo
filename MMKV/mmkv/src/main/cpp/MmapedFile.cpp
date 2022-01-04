@@ -47,6 +47,7 @@ const int DEFAULT_MMAP_SIZE = getpagesize();
 MmapedFile::MmapedFile(const std::string &path, size_t size, bool fileType)
         : m_name(path), m_fd(-1), m_segmentPtr(nullptr), m_segmentSize(0), m_fileType(fileType) {
     if (m_fileType == MMAP_FILE) {
+        MMKVDebug("open name:%s", m_name.c_str());
         //普通的内存文件进行映射到内存
         m_fd = open(m_name.c_str(), O_RDWR | O_CREAT, S_IRWXU);
         if (m_fd < 0) {
