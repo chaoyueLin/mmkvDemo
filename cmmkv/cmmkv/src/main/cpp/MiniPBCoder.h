@@ -1,0 +1,72 @@
+
+
+#ifndef CMMKV_MINIPBCODER_H
+#define CMMKV_MINIPBCODER_H
+
+#include "MMBuffer.h"
+#include "MMKVLog.h"
+#include <cstdint>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+
+class CodedInputData;
+
+class CodedOutputData;
+
+class MiniPBCoder final {
+    const MMBuffer *m_inputBuffer;
+    CodedInputData *m_inputData;
+
+    MMBuffer *m_outputBuffer;
+    CodedOutputData *m_outputData;
+private:
+    MiniPBCoder();
+
+    MiniPBCoder(const MMBuffer *inputBuffer);
+
+    ~MiniPBCoder();
+
+    MiniPBCoder(const MiniPBCoder &other) = delete;
+
+    MiniPBCoder &operator=(const MiniPBCoder &other) = delete;
+
+
+    MMBuffer getEncodeData(const std::string &str);
+
+    MMBuffer getEncodeData(const MMBuffer &buffer);
+
+    MMBuffer getEncodeData(const std::vector<std::string> &vector);
+
+    MMBuffer getEncodeData(const std::unordered_map<std::string, MMBuffer> &map);
+
+    std::string decodeOneString();
+
+    MMBuffer decodeOneBytes();
+
+    std::vector<std::string> decodeOneSet();
+
+    std::unordered_map<std::string, MMBuffer> decodeOneMap(size_t size = 0);
+
+public:
+    template<typename T>
+    static MMBuffer encodeDataWithObject(const T &obj) {
+        MiniPBCoder pbcoder;
+        return pbcoder.getEncodeData(obj);
+    }
+
+    static std::string decodeString(const MMBuffer &oData);
+
+    static MMBuffer decodeBytes(const MMBuffer &oData);
+
+    static std::vector<std::string> decodeSet(const MMBuffer &oData);
+
+    static std::unordered_map<std::string, MMBuffer> decodeMap(const MMBuffer &oData,
+                                                               size_t size = 0);
+
+
+};
+
+
+#endif //CMMKV_MINIPBCODER_H

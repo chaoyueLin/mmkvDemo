@@ -16,6 +16,60 @@
 ## 整体设计
 ![](./mmkv.jpg)
 
+protobuf协议在CodeInputData读取，CodeOutputData写入的对称关系
+
+	void CodedOutputData::writeString(const string &value) {
+	    //先写了大小
+	    size_t numberOfBytes = value.size();
+	    //writeRawVarint32这个方法position已经增加
+	    this->writeRawVarint32((int32_t) numberOfBytes);
+	    //再保存值
+	    memcpy(m_ptr + m_position, ((uint8_t *) value.data()), numberOfBytes);
+	    m_position += numberOfBytes;
+	}
+	
+	void CodedOutputData::writeData(const MMBuffer &value) {
+	    //先写了大小
+	    this->writeRawVarint32((int32_t) value.length());
+	    //再保存值
+	    this->writeRawData(value);
+	}
+
+
+	string CodedInputData::readString() {
+	    //读取了大小，readRawVarint32这个方法m_position已经增加
+	    int32_t size = this->readRawVarint32();
+	    if (size <= (m_size - m_position) && size > 0) {
+	        //再读值
+	        string result((char *) (m_ptr + m_position), size);
+	        m_position += size;
+	        return result;
+	    } else if (size == 0) {
+	        return "";
+	    } else {
+	        MMKVError("Invalid Size: %d", size);
+	        return "";
+	    }
+	}
+	
+	MMBuffer CodedInputData::readData() {
+	    //读取了大小
+	    int32_t size = this->readRawVarint32();
+	    if (size < 0) {
+	        MMKVError("InvalidProtocolBuffer negativeSize");
+	        return MMBuffer(0);
+	    }
+	
+	    if (size <= m_size - m_position) {
+	        //再读取值
+	        MMBuffer data(((int8_t *) m_ptr) + m_position, size);
+	        m_position += size;
+	        return data;
+	    } else {
+	        MMKVError("InvalidProtocolBuffer truncatedMessage");
+	        return MMBuffer(0);
+	    }
+	}
 ### 类图分析
 
 ![](./MMKV.png)

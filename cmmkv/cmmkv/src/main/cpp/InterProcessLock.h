@@ -54,6 +54,7 @@ class InterProcessLock final {
     FileLock *m_fileLock;
     LockType m_lockType;
 
+public:
     bool m_enable;
 
     InterProcessLock(FileLock *fileLock, LockType lockType) noexcept

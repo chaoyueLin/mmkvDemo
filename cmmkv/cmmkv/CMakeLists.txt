@@ -42,6 +42,10 @@ add_library( # Sets the name of the library.
         src/main/cpp/MmapedFile.cpp
         src/main/cpp/test/testMMapFile.h
         src/main/cpp/test/testMMapFile.cpp
+        src/main/cpp/CMMKV.h
+        src/main/cpp/CMMKV.cpp
+        src/main/cpp/MiniPBCoder.h
+        src/main/cpp/MiniPBCoder.cpp
         )
 
 # Searches for a specified prebuilt library and stores the path as a

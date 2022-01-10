@@ -72,8 +72,10 @@ bool CodedInputData::readBool() {
 }
 
 string CodedInputData::readString() {
+    //读取了大小，readRawVarint32这个方法m_position已经增加
     int32_t size = this->readRawVarint32();
     if (size <= (m_size - m_position) && size > 0) {
+        //再读值
         string result((char *) (m_ptr + m_position), size);
         m_position += size;
         return result;
@@ -86,6 +88,7 @@ string CodedInputData::readString() {
 }
 
 MMBuffer CodedInputData::readData() {
+    //读取了大小
     int32_t size = this->readRawVarint32();
     if (size < 0) {
         MMKVError("InvalidProtocolBuffer negativeSize");
@@ -93,6 +96,7 @@ MMBuffer CodedInputData::readData() {
     }
 
     if (size <= m_size - m_position) {
+        //再读取值
         MMBuffer data(((int8_t *) m_ptr) + m_position, size);
         m_position += size;
         return data;

@@ -58,19 +58,21 @@ void CodedOutputData::writeBool(bool value) {
     this->writeRawByte(static_cast<uint8_t>(value ? 1 : 0));
 }
 
-/**
- * 写完数据m_position保存都是最后
- * @param value
- */
+
 void CodedOutputData::writeString(const string &value) {
+    //先写了大小
     size_t numberOfBytes = value.size();
+    //writeRawVarint32这个方法position已经增加
     this->writeRawVarint32((int32_t) numberOfBytes);
+    //再保存值
     memcpy(m_ptr + m_position, ((uint8_t *) value.data()), numberOfBytes);
     m_position += numberOfBytes;
 }
 
 void CodedOutputData::writeData(const MMBuffer &value) {
+    //先写了大小
     this->writeRawVarint32((int32_t) value.length());
+    //再保存值
     this->writeRawData(value);
 }
 
