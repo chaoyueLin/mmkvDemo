@@ -3,6 +3,7 @@
 #include <cstdint>
 #include "MMKVLog.h"
 #include "CMMKV.h"
+#include "MMBuffer.h"
 
 
 using namespace std;
@@ -16,6 +17,9 @@ Java_com_example_chaoyue_cmmkv_MMKV_stringFromJNI(JNIEnv *env, jobject thiz) {
     return env->NewStringUTF(hello.c_str());
 }
 
+static jstring string2jstring(JNIEnv *env, const string &str) {
+    return env->NewStringUTF(str.c_str());
+}
 
 static string jstring2string(JNIEnv *env, jstring str) {
     if (str) {
@@ -76,3 +80,38 @@ Java_com_example_chaoyue_cmmkv_MMKV_decodeBool(JNIEnv *env, jobject thiz, jlong 
     }
     return defaultValue;
 }
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_encodeString(JNIEnv *env, jobject thiz, jlong handle,
+                                                 jstring oKey, jstring oValue) {
+
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && oKey && oValue) {
+        string key = jstring2string(env, oKey);
+        string value = jstring2string(env, oValue);
+        return (jboolean) kv->setStringForKey(value, key);
+    }
+    return (jboolean) false;
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_decodeString(JNIEnv *env, jobject thiz, jlong handle,
+                                                 jstring oKey, jstring oDefaultValue) {
+
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && oKey) {
+        string key = jstring2string(env, oKey);
+        string value;
+        bool hasValue = kv->getStringForKey(key, value);
+        if (hasValue) {
+            return string2jstring(env, value);
+        }
+    }
+    return oDefaultValue;
+}
+
+
+
+

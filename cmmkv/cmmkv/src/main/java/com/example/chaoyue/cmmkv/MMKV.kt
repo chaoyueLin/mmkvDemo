@@ -42,12 +42,24 @@ class MMKV private constructor(val id:Long){
         return encodeBool(nativeHandle, key!!, value)
     }
 
-    fun decodeBool(key: String?): Boolean {
-        return decodeBool(nativeHandle, key!!, false)
+    fun decodeBool(key: String): Boolean {
+        return decodeBool(nativeHandle, key, false)
     }
 
-    fun decodeBool(key: String?, defaultValue: Boolean): Boolean {
-        return decodeBool(nativeHandle, key!!, defaultValue)
+    fun decodeBool(key: String, defaultValue: Boolean): Boolean {
+        return decodeBool(nativeHandle, key, defaultValue)
+    }
+
+    fun encode(key: String, value: String): Boolean {
+        return encodeString(nativeHandle, key, value)
+    }
+
+    fun decodeString(key: String): String? {
+        return decodeString(nativeHandle, key, null)
+    }
+
+    fun decodeString(key: String, defaultValue: String): String? {
+        return decodeString(nativeHandle, key, defaultValue)
     }
 
     private external fun initialize(rootDir: String)
@@ -58,6 +70,10 @@ class MMKV private constructor(val id:Long){
     private external fun encodeBool(handle: Long, key: String, value: Boolean): Boolean
 
     private external fun decodeBool(handle: Long, key: String, defaultValue: Boolean): Boolean
+
+    private external fun encodeString(handle: Long, key: String, value: String): Boolean
+
+    private external fun decodeString(handle: Long, key: String, defaultValue: String?): String?
 
 
 }

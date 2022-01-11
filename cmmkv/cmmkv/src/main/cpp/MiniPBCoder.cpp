@@ -107,7 +107,7 @@ MMBuffer MiniPBCoder::getEncodeData(const string &str) {
 
     int32_t valueSize = static_cast<int32_t>(str.size());
 
-    uint32_t compiledSize = pbRawVarint32Size(valueSize) + valueSize;
+    int32_t compiledSize = pbRawVarint32Size(valueSize) + valueSize;
 
     if (compiledSize > 0) {
         m_outputBuffer = new MMBuffer(compiledSize);
@@ -119,7 +119,7 @@ MMBuffer MiniPBCoder::getEncodeData(const string &str) {
 }
 
 MMBuffer MiniPBCoder::getEncodeData(const MMBuffer &buffer) {
-    uint32_t compiledSize = pbRawVarint32Size(buffer.length()) + buffer.length();
+    int32_t compiledSize = pbRawVarint32Size(buffer.length()) + buffer.length();
 
     if (compiledSize > 0) {
         m_outputBuffer = new MMBuffer(compiledSize);
@@ -132,7 +132,8 @@ MMBuffer MiniPBCoder::getEncodeData(const MMBuffer &buffer) {
 }
 
 MMBuffer MiniPBCoder::getEncodeData(const vector<string> &v) {
-    uint32_t compiledSize;
+    int32_t compiledSize=0;
+
     for (const auto &str : v) {
         if (str.length() <= 0) {
             continue;
@@ -141,6 +142,7 @@ MMBuffer MiniPBCoder::getEncodeData(const vector<string> &v) {
         compiledSize += pbRawVarint32Size(valueSize) + valueSize;
     }
     compiledSize = pbRawVarint32Size(compiledSize) + compiledSize;
+
     if (compiledSize > 0) {
         m_outputBuffer = new MMBuffer(compiledSize);
         m_outputData = new CodedOutputData(m_outputBuffer->getPtr(), m_outputBuffer->length());
@@ -151,7 +153,8 @@ MMBuffer MiniPBCoder::getEncodeData(const vector<string> &v) {
 }
 
 MMBuffer MiniPBCoder::getEncodeData(const unordered_map<string, MMBuffer> &map) {
-    uint32_t compiledSize;
+    int32_t compiledSize=0;
+
     for (const auto &itr : map) {
         const auto &key = itr.first;
         const auto &value = itr.second;
@@ -164,10 +167,11 @@ MMBuffer MiniPBCoder::getEncodeData(const unordered_map<string, MMBuffer> &map) 
         int32_t keyIndex = static_cast<int32_t>(key.size());
         compiledSize += pbRawVarint32Size(keyIndex) + keyIndex;
 
-        int32_t valueIndex = static_cast<int32_t>(key.size());
+        int32_t valueIndex = static_cast<int32_t>(value.length());
         compiledSize += pbRawVarint32Size(valueIndex) + valueIndex;
     }
     compiledSize = pbRawVarint32Size(compiledSize) + compiledSize;
+
     if (compiledSize > 0) {
         m_outputBuffer = new MMBuffer(compiledSize);
         m_outputData = new CodedOutputData(m_outputBuffer->getPtr(), m_outputBuffer->length());

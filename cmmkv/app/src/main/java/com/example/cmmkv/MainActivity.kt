@@ -19,12 +19,12 @@ class MainActivity : AppCompatActivity() {
         // Example of a call to a native method
 
         MMKV.initialize(this.applicationContext)
-        val mmkv = MMKV.mmkvWithID("unitTest")
-        binding.sampleText.text = mmkv.stringFromJNI()
+//        binding.sampleText.text = mmkv.stringFromJNI()
 
+        val mmkv = MMKV.mmkvWithID("unitTest")
 
         binding.bMmap.setOnClickListener {
-            mmkv.encode("bool", true)
+//            mmkv.encode("bool", true)
             System.out.println("bool: " + mmkv.decodeBool("bool"))
         }
     }
