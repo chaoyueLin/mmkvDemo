@@ -21,7 +21,7 @@
 
 using namespace std;
 
-static unordered_map<std::string, CMMKV *> *g_instanceDic;
+
 static ThreadLock g_instanceLock;
 static std::string g_rootDir;
 
@@ -32,6 +32,29 @@ constexpr uint32_t Fixed32Size = pbFixed32Size(0);
 static string mappedKVPathWithID(const string &mmapID, MMKVMode mode);
 
 static string crcPathWithID(const string &mmapID, MMKVMode mode);
+
+
+void initialize() {
+
+    g_instanceLock = ThreadLock();
+
+    //testAESCrypt();
+
+    MMKVInfo("page size:%d", DEFAULT_MMAP_SIZE);
+}
+void CMMKV::initializeMMKV(const std::string &rootDir) {
+    //线程安全,一个线程初始化一次
+    static pthread_once_t once_control = PTHREAD_ONCE_INIT;
+    pthread_once(&once_control, initialize);
+
+    g_rootDir = rootDir;
+    char *path = strdup(g_rootDir.c_str());
+    mkPath(path);
+    free(path);
+
+    MMKVInfo("root dir: %s", g_rootDir.c_str());
+}
+
 
 enum : bool {
     KeepSequence = false,
@@ -268,6 +291,89 @@ bool CMMKV::isFileValid() {
     return false;
 }
 
+void CMMKV::writeAcutalSize(size_t actualSize) {
+    assert(m_ptr != 0);
+    assert(m_ptr != MAP_FAILED);
+
+    memcpy(m_ptr, &actualSize, Fixed32Size);
+    m_actualSize = actualSize;
+}
+
+/**
+ * 扩容
+ * @param newSize
+ * @return
+ */
+bool CMMKV::ensureMemorySize(size_t newSize) {
+    if (!isFileValid()) {
+        MMKVWarning("[%s] file not valid", m_mmapID.c_str());
+        return false;
+    }
+
+    if (newSize >= m_output->spaceLeft()) {
+        // try a full rewrite to make space
+        static const int offset = pbFixed32Size(0);
+        MMBuffer data = MiniPBCoder::encodeDataWithObject(m_dic);
+        size_t lenNeeded = data.length() + offset + newSize;
+        if (m_isAshmem) {
+            if (lenNeeded > m_size) {
+                MMKVWarning("ashmem %s reach size limit:%zu, consider configure with larger size",
+                            m_mmapID.c_str(), m_size);
+                return false;
+            }
+        } else {
+            //扩充大小是按照m_dic，(m_dic.size() + 1) / 2，扩充这么大，相当于*1.5
+            size_t futureUsage = newSize * std::max<size_t>(8, (m_dic.size() + 1) / 2);
+            // 1. no space for a full rewrite, double it
+            // 2. or space is not large enough for future usage, double it to avoid frequently full rewrite
+            if (lenNeeded >= m_size || (lenNeeded + futureUsage) >= m_size) {
+                size_t oldSize = m_size;
+                do {
+                    m_size *= 2;
+                } while (lenNeeded + futureUsage >= m_size);
+                MMKVInfo(
+                        "extending [%s] file size from %zu to %zu, incoming size:%zu, futrue usage:%zu",
+                        m_mmapID.c_str(), oldSize, m_size, newSize, futureUsage);
+
+                // if we can't extend size, rollback to old state
+                if (ftruncate(m_fd, m_size) != 0) {
+                    MMKVError("fail to truncate [%s] to size %zu, %s", m_mmapID.c_str(), m_size,
+                              strerror(errno));
+                    m_size = oldSize;
+                    return false;
+                }
+                if (!zeroFillFile(m_fd, oldSize, m_size - oldSize)) {
+                    MMKVError("fail to zeroFile [%s] to size %zu, %s", m_mmapID.c_str(), m_size,
+                              strerror(errno));
+                    m_size = oldSize;
+                    return false;
+                }
+
+                if (munmap(m_ptr, oldSize) != 0) {
+                    MMKVError("fail to munmap [%s], %s", m_mmapID.c_str(), strerror(errno));
+                }
+                m_ptr = (char *) mmap(m_ptr, m_size, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd, 0);
+                if (m_ptr == MAP_FAILED) {
+                    MMKVError("fail to mmap [%s], %s", m_mmapID.c_str(), strerror(errno));
+                }
+
+                // check if we fail to make more space
+                if (!isFileValid()) {
+                    MMKVWarning("[%s] file not valid", m_mmapID.c_str());
+                    return false;
+                }
+            }
+        }
+
+
+        writeAcutalSize(data.length());
+
+        delete m_output;
+        m_output = new CodedOutputData(m_ptr + offset, m_size - offset);
+        m_output->writeRawData(data);
+    }
+    return true;
+}
 
 void CMMKV::loadFromAshmem() {
 
@@ -346,6 +452,22 @@ bool CMMKV::setDataForKey(MMBuffer &&data, const std::string &key) {
 
     return appendDataWithKey(itr->second, key);
 }
+/**
+ * 校验数据
+ */
+void CMMKV::checkLoadData() {
+    //只从本地加载一次
+    if (m_needLoadFromFile) {
+        SCOPEDLOCK(m_sharedProcessLock);
+
+        m_needLoadFromFile = false;
+        loadFromFile();
+        return;
+    }
+    if (!m_isInterProcess) {
+        return;
+    }
+}
 
 /**
  * 保存数据都是拼接在最后的，需要key,key的大小，数据，数据的大小
@@ -382,4 +504,185 @@ bool CMMKV::appendDataWithKey(const MMBuffer &data, const std::string &key) {
 
         return true;
     }
+}
+
+bool CMMKV::setBytesForKey(const MMBuffer &value, const std::string &key) {
+    if (key.empty()) {
+        return false;
+    }
+    auto data = MiniPBCoder::encodeDataWithObject(value);
+    return setDataForKey(std::move(data), key);
+}
+
+bool CMMKV::setBool(bool value, const std::string &key) {
+    if (key.empty()) {
+        return false;
+    }
+    size_t size = pbBoolSize(value);
+    MMBuffer data(size);
+    CodedOutputData output(data.getPtr(), size);
+    output.writeBool(value);
+
+    return setDataForKey(std::move(data), key);
+}
+
+bool CMMKV::setInt32(int32_t value, const std::string &key) {
+    if (key.empty()) {
+        return false;
+    }
+    size_t size = pbInt32Size(value);
+    MMBuffer data(size);
+    CodedOutputData output(data.getPtr(), size);
+    output.writeInt32(value);
+
+    return setDataForKey(std::move(data), key);
+}
+
+bool CMMKV::setInt64(int64_t value, const std::string &key) {
+    if (key.empty()) {
+        return false;
+    }
+    size_t size = pbInt64Size(value);
+    MMBuffer data(size);
+    CodedOutputData output(data.getPtr(), size);
+    output.writeInt64(value);
+
+    return setDataForKey(std::move(data), key);
+}
+
+bool CMMKV::setFloat(float value, const std::string &key) {
+    if (key.empty()) {
+        return false;
+    }
+    size_t size = pbFloatSize(value);
+    MMBuffer data(size);
+    CodedOutputData output(data.getPtr(), size);
+    output.writeFloat(value);
+
+    return setDataForKey(std::move(data), key);
+}
+
+bool CMMKV::setDouble(double value, const std::string &key) {
+    if (key.empty()) {
+        return false;
+    }
+    size_t size = pbDoubleSize(value);
+    MMBuffer data(size);
+    CodedOutputData output(data.getPtr(), size);
+    output.writeDouble(value);
+
+    return setDataForKey(std::move(data), key);
+}
+bool CMMKV::setVectorForKey(const std::vector<std::string> &v, const std::string &key) {
+    if (key.empty()) {
+        return false;
+    }
+    auto data = MiniPBCoder::encodeDataWithObject(v);
+    return setDataForKey(std::move(data), key);
+}
+
+bool CMMKV::getStringForKey(const std::string &key, std::string &result) {
+    if (key.empty()) {
+        return false;
+    }
+    auto &data = getDataForKey(key);
+    if (data.length() > 0) {
+        result = MiniPBCoder::decodeString(data);
+        return true;
+    }
+    return false;
+}
+
+const MMBuffer &CMMKV::getDataForKey(const std::string &key) {
+    SCOPEDLOCK(m_lock);
+    checkLoadData();
+    auto itr = m_dic.find(key);
+    if (itr != m_dic.end()) {
+        return itr->second;
+    }
+    static MMBuffer nan(0);
+    return nan;
+}
+
+MMBuffer CMMKV::getBytesForKey(const std::string &key) {
+    if (key.empty()) {
+        return MMBuffer(0);
+    }
+    auto &data = getDataForKey(key);
+    if (data.length() > 0) {
+        return MiniPBCoder::decodeBytes(data);
+    }
+    return MMBuffer(0);
+}
+
+bool CMMKV::getBoolForKey(const std::string &key, bool defaultValue) {
+    if (key.empty()) {
+        return defaultValue;
+    }
+    auto &data = getDataForKey(key);
+    if (data.length() > 0) {
+        CodedInputData input(data.getPtr(), data.length());
+        return input.readBool();
+    }
+    return defaultValue;
+}
+
+int32_t CMMKV::getInt32ForKey(const std::string &key, int32_t defaultValue) {
+    if (key.empty()) {
+        return defaultValue;
+    }
+    auto &data = getDataForKey(key);
+    if (data.length() > 0) {
+        CodedInputData input(data.getPtr(), data.length());
+        return input.readInt32();
+    }
+    return defaultValue;
+}
+
+int64_t CMMKV::getInt64ForKey(const std::string &key, int64_t defaultValue) {
+    if (key.empty()) {
+        return defaultValue;
+    }
+    auto &data = getDataForKey(key);
+    if (data.length() > 0) {
+        CodedInputData input(data.getPtr(), data.length());
+        return input.readInt64();
+    }
+    return defaultValue;
+}
+
+float CMMKV::getFloatForKey(const std::string &key, float defaultValue) {
+    if (key.empty()) {
+        return defaultValue;
+    }
+    auto &data = getDataForKey(key);
+    if (data.length() > 0) {
+        CodedInputData input(data.getPtr(), data.length());
+        return input.readFloat();
+    }
+    return defaultValue;
+}
+
+double CMMKV::getDoubleForKey(const std::string &key, double defaultValue) {
+    if (key.empty()) {
+        return defaultValue;
+    }
+    auto &data = getDataForKey(key);
+    if (data.length() > 0) {
+        CodedInputData input(data.getPtr(), data.length());
+        return input.readDouble();
+    }
+    return defaultValue;
+}
+
+bool CMMKV::getVectorForKey(const std::string &key, std::vector<std::string> &result) {
+    if (key.empty()) {
+        return false;
+    }
+    auto &data = getDataForKey(key);
+    if (data.length() > 0) {
+        result = MiniPBCoder::decodeSet(data);
+        return true;
+    }
+    return false;
 }

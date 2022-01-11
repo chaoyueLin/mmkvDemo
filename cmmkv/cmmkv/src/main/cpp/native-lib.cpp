@@ -2,8 +2,7 @@
 #include <string>
 #include <cstdint>
 #include "MMKVLog.h"
-#include "/test/testLock.h"
-#include "/test/testMMapFile.h"
+#include "CMMKV.h"
 
 
 using namespace std;
@@ -17,19 +16,6 @@ Java_com_example_chaoyue_cmmkv_MMKV_stringFromJNI(JNIEnv *env, jobject thiz) {
     return env->NewStringUTF(hello.c_str());
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_example_chaoyue_cmmkv_MMKV_testLog(JNIEnv *env, jobject thiz) {
-    Test::testLog();
-}
-
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_example_chaoyue_cmmkv_MMKV_testLock(JNIEnv *env, jobject thiz) {
-    Test test;
-    test.testLock();
-}
 
 static string jstring2string(JNIEnv *env, jstring str) {
     if (str) {
@@ -51,7 +37,7 @@ Java_com_example_chaoyue_cmmkv_MMKV_initialize(JNIEnv *env, jobject thiz, jstrin
     }
     const char *kstr = env->GetStringUTFChars(rootDir, nullptr);
     if (kstr) {
-        testMMapFile::initializeMMKV(kstr);
+        CMMKV::initializeMMKV(kstr);
         env->ReleaseStringUTFChars(rootDir, kstr);
     }
 }
@@ -59,15 +45,34 @@ Java_com_example_chaoyue_cmmkv_MMKV_initialize(JNIEnv *env, jobject thiz, jstrin
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_example_chaoyue_cmmkv_MMKV_getMMKVWithID(JNIEnv *env, jobject thiz, jstring mmapID) {
-    MmapedFile *kv = nullptr;
+    CMMKV *kv = nullptr;
     string str = jstring2string(env, mmapID);
-    kv = testMMapFile::mmkvWithID(str, DEFAULT_MMAP_SIZE);
+    kv = new CMMKV(str, DEFAULT_MMAP_SIZE, MMKV_SINGLE_PROCESS);
     return (jlong) kv;
 }
 
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_encodeBool(JNIEnv *env, jobject thiz, jlong handle,
+                                               jstring oKey,
+                                               jboolean value) {
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && oKey) {
+        string key = jstring2string(env, oKey);
+        return (jboolean) kv->setBool(value, key);
+    }
+    return (jboolean) false;
+}
 
 extern "C"
-JNIEXPORT jint JNICALL
-Java_com_example_chaoyue_cmmkv_MMKV_getMMKVValue(JNIEnv *env, jobject thiz) {
-    return testMMapFile::getValue();
+JNIEXPORT jboolean JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_decodeBool(JNIEnv *env, jobject thiz, jlong handle,
+                                               jstring oKey,
+                                               jboolean defaultValue) {
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && oKey) {
+        string key = jstring2string(env, oKey);
+        return (jboolean) kv->getBoolForKey(key, defaultValue);
+    }
+    return defaultValue;
 }

@@ -118,5 +118,64 @@ MMBuffer MiniPBCoder::getEncodeData(const string &str) {
     return move(*m_outputBuffer);
 }
 
+MMBuffer MiniPBCoder::getEncodeData(const MMBuffer &buffer) {
+    uint32_t compiledSize = pbRawVarint32Size(buffer.length()) + buffer.length();
+
+    if (compiledSize > 0) {
+        m_outputBuffer = new MMBuffer(compiledSize);
+        m_outputData = new CodedOutputData(m_outputBuffer->getPtr(), m_outputBuffer->length());
+
+        m_outputData->writeData(buffer);
+    }
+
+    return move(*m_outputBuffer);
+}
+
+MMBuffer MiniPBCoder::getEncodeData(const vector<string> &v) {
+    uint32_t compiledSize;
+    for (const auto &str : v) {
+        if (str.length() <= 0) {
+            continue;
+        }
+        int32_t valueSize = static_cast<int32_t>(str.size());
+        compiledSize += pbRawVarint32Size(valueSize) + valueSize;
+    }
+    compiledSize = pbRawVarint32Size(compiledSize) + compiledSize;
+    if (compiledSize > 0) {
+        m_outputBuffer = new MMBuffer(compiledSize);
+        m_outputData = new CodedOutputData(m_outputBuffer->getPtr(), m_outputBuffer->length());
+        m_outputData->writeRawVarint32(compiledSize);
+    }
+
+    return move(*m_outputBuffer);
+}
+
+MMBuffer MiniPBCoder::getEncodeData(const unordered_map<string, MMBuffer> &map) {
+    uint32_t compiledSize;
+    for (const auto &itr : map) {
+        const auto &key = itr.first;
+        const auto &value = itr.second;
+        if (key.length() <= 0) {
+            continue;
+        }
+        if (value.length() <= 0) {
+            continue;
+        }
+        int32_t keyIndex = static_cast<int32_t>(key.size());
+        compiledSize += pbRawVarint32Size(keyIndex) + keyIndex;
+
+        int32_t valueIndex = static_cast<int32_t>(key.size());
+        compiledSize += pbRawVarint32Size(valueIndex) + valueIndex;
+    }
+    compiledSize = pbRawVarint32Size(compiledSize) + compiledSize;
+    if (compiledSize > 0) {
+        m_outputBuffer = new MMBuffer(compiledSize);
+        m_outputData = new CodedOutputData(m_outputBuffer->getPtr(), m_outputBuffer->length());
+        m_outputData->writeRawVarint32(compiledSize);
+    }
+
+    return std::move(*m_outputBuffer);
+}
+
 
 

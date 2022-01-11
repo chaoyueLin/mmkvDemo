@@ -47,7 +47,7 @@ class CMMKV final {
 
     void loadFromFile();
 
-    void partialLoadFromFile();
+//    void partialLoadFromFile();
 
     void loadFromAshmem();
 
@@ -59,17 +59,16 @@ class CMMKV final {
 
     bool ensureMemorySize(size_t newSize);
 
-    bool fullWriteback();
+//    bool fullWriteback();
 
     const MMBuffer &getDataForKey(const std::string &key);
 
     bool setDataForKey(MMBuffer &&data, const std::string &key);
 
-    bool removeDataForKey(const std::string &key);
+//    bool removeDataForKey(const std::string &key);
 
     bool appendDataWithKey(const MMBuffer &data, const std::string &key);
 
-    void checkReSetCryptKey(int fd, int metaFD, std::string *cryptKey);
 
     // just forbid it for possibly misuse
     CMMKV(const CMMKV &other) = delete;

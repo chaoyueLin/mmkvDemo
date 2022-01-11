@@ -28,8 +28,6 @@ add_library( # Sets the name of the library.
         src/main/cpp/ScopedLock.hpp
         src/main/cpp/InterProcessLock.cpp
         src/main/cpp/InterProcessLock.h
-        src/main/cpp/test/testLock.cpp
-        src/main/cpp/test/testLock.h
         src/main/cpp/PBUtility.h
         src/main/cpp/PBUtility.cpp
         src/main/cpp/CodedInputData.h
@@ -40,8 +38,6 @@ add_library( # Sets the name of the library.
         src/main/cpp/MMBuffer.cpp
         src/main/cpp/MmapedFile.h
         src/main/cpp/MmapedFile.cpp
-        src/main/cpp/test/testMMapFile.h
-        src/main/cpp/test/testMMapFile.cpp
         src/main/cpp/CMMKV.h
         src/main/cpp/CMMKV.cpp
         src/main/cpp/MiniPBCoder.h

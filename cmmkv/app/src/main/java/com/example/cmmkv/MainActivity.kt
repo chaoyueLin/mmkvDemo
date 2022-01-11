@@ -1,14 +1,14 @@
 package com.example.cmmkv
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.example.chaoyue.cmmkv.MMKV
 import com.example.cmmkv.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,20 +17,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Example of a call to a native method
-        val mmkv: MMKV = MMKV()
+
+        MMKV.initialize(this.applicationContext)
+        val mmkv = MMKV.mmkvWithID("unitTest")
         binding.sampleText.text = mmkv.stringFromJNI()
-//        mmkv.testLog()
-//        Thread {
-//            mmkv.testLock()
-//
-//        }.start()
-        Thread {
-            mmkv.initialize(this.applicationContext)
-            mmkv.mmkvWithID("unitTest")
-        }.start()
+
 
         binding.bMmap.setOnClickListener {
-            Log.d("cmmkv","value="+mmkv.mmkvGetValue())
+            mmkv.encode("bool", true)
+            System.out.println("bool: " + mmkv.decodeBool("bool"))
         }
     }
 

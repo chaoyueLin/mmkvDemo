@@ -2,7 +2,9 @@ package com.example.chaoyue.cmmkv
 
 import android.content.Context
 
-class MMKV {
+class MMKV private constructor(val id:Long){
+
+    private val nativeHandle: Long = id
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
@@ -15,34 +17,47 @@ class MMKV {
         init {
             System.loadLibrary("native-lib")
         }
+
+        val instance=MMKV(0)
+        // call on program start
+        fun initialize(context: Context): String? {
+            val rootDir = context.filesDir.absolutePath + "/mmkv"
+            instance.initialize(rootDir)
+            return rootDir
+        }
+        fun mmkvWithID(mmapID: String): MMKV {
+            val handle: Long = instance.getMMKVWithID(mmapID)
+            return MMKV(handle)
+        }
     }
 
 
-    // call on program start
-    fun initialize(context: Context): String? {
-        val rootDir = context.filesDir.absolutePath + "/mmkv"
-        initialize(rootDir)
-        return rootDir
-    }
 
-    fun mmkvWithID(mmapID: String): Long? {
+
+    private fun mmkvWithID(mmapID: String): Long? {
         val handle: Long = getMMKVWithID(mmapID)
         return handle
     }
-
-    fun mmkvGetValue():Int{
-        return getMMKVValue()
+    fun encode(key: String?, value: Boolean): Boolean {
+        return encodeBool(nativeHandle, key!!, value)
     }
 
+    fun decodeBool(key: String?): Boolean {
+        return decodeBool(nativeHandle, key!!, false)
+    }
 
-
-    external fun testLog()
-
-    external fun testLock()
+    fun decodeBool(key: String?, defaultValue: Boolean): Boolean {
+        return decodeBool(nativeHandle, key!!, defaultValue)
+    }
 
     private external fun initialize(rootDir: String)
 
     private external fun getMMKVWithID(mmapID: String): Long
 
-    private external fun getMMKVValue():Int
+
+    private external fun encodeBool(handle: Long, key: String, value: Boolean): Boolean
+
+    private external fun decodeBool(handle: Long, key: String, defaultValue: Boolean): Boolean
+
+
 }
