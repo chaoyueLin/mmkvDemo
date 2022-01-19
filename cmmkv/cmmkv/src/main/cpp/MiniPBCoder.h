@@ -9,7 +9,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
+#include "PBEncodeItem.hpp"
 
 class CodedInputData;
 
@@ -21,6 +21,8 @@ class MiniPBCoder final {
 
     MMBuffer *m_outputBuffer;
     CodedOutputData *m_outputData;
+
+    std::vector<PBEncodeItem> *m_encodeItems;
 private:
     MiniPBCoder();
 
@@ -28,10 +30,15 @@ private:
 
     ~MiniPBCoder();
 
-    MiniPBCoder(const MiniPBCoder &other) = delete;
+    void writeRootObject();
 
-    MiniPBCoder &operator=(const MiniPBCoder &other) = delete;
+    size_t prepareObjectForEncode(const std::string &str);
 
+    size_t prepareObjectForEncode(const MMBuffer &buffer);
+
+    size_t prepareObjectForEncode(const std::vector<std::string> &vector);
+
+    size_t prepareObjectForEncode(const std::unordered_map<std::string, MMBuffer> &map);
 
     MMBuffer getEncodeData(const std::string &str);
 

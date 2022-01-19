@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
         val mmkv = MMKV.mmkvWithID("unitTest")
 
         binding.bMmap.setOnClickListener {
+            System.out.println("MMKV: " + mmkv.decodeBool("bool"))
 //            mmkv.encode("bool", true)
-            System.out.println("bool: " + mmkv.decodeBool("bool"))
         }
     }
 
