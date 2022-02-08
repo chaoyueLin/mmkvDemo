@@ -23,9 +23,20 @@ class MainActivity : AppCompatActivity() {
 
         val mmkv = MMKV.mmkvWithID("unitTest")
 
+
+        System.out.println("MMKV string: " + mmkv.decodeString("string"))
         binding.bMmap.setOnClickListener {
-            System.out.println("MMKV: " + mmkv.decodeBool("bool"))
 //            mmkv.encode("bool", true)
+            mmkv.encode("string", "Hello from mmkv")
+//            mmkv.encode("int", Int.MIN_VALUE)
+//
+//            mmkv.encode("long", Long.MAX_VALUE)
+//
+//            mmkv.encode("float", -3.14f);
+//
+//            mmkv.encode("double", Double.MIN_VALUE);
+
+
         }
     }
 

@@ -113,5 +113,98 @@ Java_com_example_chaoyue_cmmkv_MMKV_decodeString(JNIEnv *env, jobject thiz, jlon
 }
 
 
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_encodeInt(JNIEnv *env, jobject thiz, jlong handle, jstring key,
+                                              jint value) {
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && key) {
+        string k = jstring2string(env, key);
+        return (jboolean) kv->setInt32(value, k);
+    }
+    return (jboolean) false;
+}
 
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_decodeInt(JNIEnv *env, jobject thiz, jlong handle, jstring key,
+                                              jint default_value) {
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && key) {
+        string k = jstring2string(env, key);
+        return (jboolean) kv->getInt32ForKey(k, default_value);
+    }
+    return default_value;
+}
 
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_encodeLong(JNIEnv *env, jobject thiz, jlong handle, jstring key,
+                                               jlong value) {
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && key) {
+        string k = jstring2string(env, key);
+        return (jboolean) kv->setInt64(value, k);
+    }
+    return (jboolean) false;
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_decodeLong(JNIEnv *env, jobject thiz, jlong handle, jstring key,
+                                               jlong default_value) {
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && key) {
+        string k = jstring2string(env, key);
+        return (jboolean) kv->getInt64ForKey(k, default_value);
+    }
+    return default_value;
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_encodeFloat(JNIEnv *env, jobject thiz, jlong handle,
+                                                jstring key, jfloat value) {
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && key) {
+        string k = jstring2string(env, key);
+        return (jboolean) kv->setFloat(value, k);
+    }
+    return (jboolean) false;
+}
+
+extern "C"
+JNIEXPORT jfloat JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_decodeFloat(JNIEnv *env, jobject thiz, jlong handle,
+                                                jstring key, jfloat default_value) {
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && key) {
+        string k = jstring2string(env, key);
+        return (jboolean) kv->getFloatForKey(k, default_value);
+    }
+    return default_value;
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_encodeDouble(JNIEnv *env, jobject thiz, jlong handle,
+                                                 jstring key, jdouble value) {
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && key) {
+        string k = jstring2string(env, key);
+        return (jboolean) kv->setDouble(value, k);
+    }
+    return (jboolean) false;
+}
+
+extern "C"
+JNIEXPORT jdouble JNICALL
+Java_com_example_chaoyue_cmmkv_MMKV_decodeDouble(JNIEnv *env, jobject thiz, jlong handle,
+                                                 jstring key, jdouble default_value) {
+    CMMKV *kv = reinterpret_cast<CMMKV *>(handle);
+    if (kv && key) {
+        string k = jstring2string(env, key);
+        return (jboolean) kv->getDoubleForKey(k, default_value);
+    }
+    return default_value;
+}

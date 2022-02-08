@@ -42,6 +42,7 @@ void initialize() {
 
     MMKVInfo("page size:%d", DEFAULT_MMAP_SIZE);
 }
+
 void CMMKV::initializeMMKV(const std::string &rootDir) {
     //线程安全,一个线程初始化一次
     static pthread_once_t once_control = PTHREAD_ONCE_INIT;
@@ -452,6 +453,7 @@ bool CMMKV::setDataForKey(MMBuffer &&data, const std::string &key) {
 
     return appendDataWithKey(itr->second, key);
 }
+
 /**
  * 校验数据
  */
@@ -573,6 +575,7 @@ bool CMMKV::setDouble(double value, const std::string &key) {
 
     return setDataForKey(std::move(data), key);
 }
+
 bool CMMKV::setVectorForKey(const std::vector<std::string> &v, const std::string &key) {
     if (key.empty()) {
         return false;

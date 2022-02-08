@@ -128,48 +128,48 @@ public class MainActivity extends AppCompatActivity {
         }
         System.out.println("bool: " + kv.decodeBool("bool"));
 
-//        if (!decodeOnly) {
-//            kv.encode("int", Integer.MIN_VALUE);
-//        }
-//        System.out.println("int: " + kv.decodeInt("int"));
-//
-//        if (!decodeOnly) {
-//            kv.encode("long", Long.MAX_VALUE);
-//        }
-//        System.out.println("long: " + kv.decodeLong("long"));
-//
-//        if (!decodeOnly) {
-//            kv.encode("float", -3.14f);
-//        }
-//        System.out.println("float: " + kv.decodeFloat("float"));
-//
-//        if (!decodeOnly) {
-//            kv.encode("double", Double.MIN_VALUE);
-//        }
-//        System.out.println("double: " + kv.decodeDouble("double"));
-//
-//        if (!decodeOnly) {
-//            kv.encode("string", "Hello from mmkv");
-//        }
-//        System.out.println("string: " + kv.decodeString("string"));
-//
-//        if (!decodeOnly) {
-//            byte[] bytes = {'m', 'm', 'k', 'v'};
-//            kv.encode("bytes", bytes);
-//        }
-//        System.out.println("bytes: " + new String(kv.decodeBytes("bytes")));
-//
-//        System.out.println("allKeys: " + Arrays.toString(kv.allKeys()));
-//        System.out.println("count = " + kv.count() + ", totalSize = " + kv.totalSize());
-//        System.out.println("containsKey[string]: " + kv.containsKey("string"));
-//
-//        kv.removeValueForKey("bool");
-//        System.out.println("bool: " + kv.decodeBool("bool"));
-//        kv.removeValuesForKeys(new String[]{"int", "long"});
-//        //kv.clearAll();
-//        kv.clearMemoryCache();
-//        System.out.println("allKeys: " + Arrays.toString(kv.allKeys()));
-//        System.out.println("isFileValid[" + kv.mmapID() + "]: " + MMKV.isFileValid(kv.mmapID()));
+        if (!decodeOnly) {
+            kv.encode("int", Integer.MIN_VALUE);
+        }
+        System.out.println("int: " + kv.decodeInt("int"));
+
+        if (!decodeOnly) {
+            kv.encode("long", Long.MAX_VALUE);
+        }
+        System.out.println("long: " + kv.decodeLong("long"));
+
+        if (!decodeOnly) {
+            kv.encode("float", -3.14f);
+        }
+        System.out.println("float: " + kv.decodeFloat("float"));
+
+        if (!decodeOnly) {
+            kv.encode("double", Double.MIN_VALUE);
+        }
+        System.out.println("double: " + kv.decodeDouble("double"));
+
+        if (!decodeOnly) {
+            kv.encode("string", "Hello from mmkv");
+        }
+        System.out.println("string: " + kv.decodeString("string"));
+
+        if (!decodeOnly) {
+            byte[] bytes = {'m', 'm', 'k', 'v'};
+            kv.encode("bytes", bytes);
+        }
+        System.out.println("bytes: " + new String(kv.decodeBytes("bytes")));
+
+        System.out.println("allKeys: " + Arrays.toString(kv.allKeys()));
+        System.out.println("count = " + kv.count() + ", totalSize = " + kv.totalSize());
+        System.out.println("containsKey[string]: " + kv.containsKey("string"));
+
+        kv.removeValueForKey("bool");
+        System.out.println("bool: " + kv.decodeBool("bool"));
+        kv.removeValuesForKeys(new String[]{"int", "long"});
+        //kv.clearAll();
+        kv.clearMemoryCache();
+        System.out.println("allKeys: " + Arrays.toString(kv.allKeys()));
+        System.out.println("isFileValid[" + kv.mmapID() + "]: " + MMKV.isFileValid(kv.mmapID()));
     }
 
     private void testImportSharedPreferences() {
