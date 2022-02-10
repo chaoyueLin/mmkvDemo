@@ -74,6 +74,10 @@ protobuf协议在CodeInputData读取，CodeOutputData写入的对称关系
 
 ![](./MMKV.png)
 
-1.mmap和匿名共享内存的有高低版本的支持两个demo
+## 自己写一个MMKV
 
-2.具体源码已经在加在代码中,可从get,set作为入口分析。
+1.mmap和匿名共享内存使用的有高低版本的支持两个demo是AshmenDemo和AsmmenJniDemo
+
+2.cmmkv是自己写的例子，去掉加密校验，具体三个阶段打了tag.
+![](./cmmkv1.png)
+![](./cmmkv2.png)
