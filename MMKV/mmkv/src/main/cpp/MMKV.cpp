@@ -756,7 +756,7 @@ bool MMKV::appendDataWithKey(const MMBuffer &data, const std::string &key) {
         writeAcutalSize(m_actualSize + size);
         m_output->writeString(key);
         m_output->writeData(data); // note: write size of data
-
+        // m_actualSize - size表示最后一个buffer的数据
         auto ptr = (uint8_t *) m_ptr + Fixed32Size + m_actualSize - size;
         if (m_crypter) {
             m_crypter->encrypt(ptr, ptr, size);
