@@ -319,7 +319,7 @@ void MMKV::loadFromFile() {
                     if (checkFileCRCValid()) {
                         MMKVInfo("loading [%s] with crc %u sequence %u", m_mmapID.c_str(),
                                  m_metaInfo.m_crcDigest, m_metaInfo.m_sequence);
-                        //用MMBuffer保持
+                        //用MMBuffer获取全部数据
                         MMBuffer inputBuffer(m_ptr + Fixed32Size, m_actualSize, MMBufferNoCopy);
                         if (m_crypter) {
                             //解密
@@ -903,13 +903,18 @@ bool MMKV::isFileValid() {
 #pragma mark - crc
 
 // assuming m_ptr & m_size is set
+
+//CRC循环冗余校验经典使用
+
 /**
- * 校验数据是否异常
+ * 全局数据校验
  * @return
  */
 bool MMKV::checkFileCRCValid() {
     if (m_ptr && m_ptr != MAP_FAILED) {
         constexpr int offset = pbFixed32Size(0);
+
+        //从0开始，m_crcDigest，与下面的recaculateCRCDigest对应使用
         m_crcDigest =
                 (uint32_t) crc32(0, (const uint8_t *) m_ptr + offset, (uint32_t) m_actualSize);
         m_metaInfo.read(m_metaFile.getMemory());
@@ -922,18 +927,29 @@ bool MMKV::checkFileCRCValid() {
     return false;
 }
 
+/**
+ * 初始一段数据生成
+ */
 void MMKV::recaculateCRCDigest() {
     if (m_ptr && m_ptr != MAP_FAILED) {
+        //第一次才调用，m_crcDigest也是从0开始
         m_crcDigest = 0;
         constexpr int offset = pbFixed32Size(0);
         updateCRCDigest((const uint8_t *) m_ptr + offset, m_actualSize, IncreaseSequence);
     }
 }
 
+/**
+ * 从初始一段后面继续更新
+ * @param ptr
+ * @param length
+ * @param increaseSequence
+ */
 void MMKV::updateCRCDigest(const uint8_t *ptr, size_t length, bool increaseSequence) {
     if (!ptr) {
         return;
     }
+    //m_crcDigest为取上个值再计算
     m_crcDigest = (uint32_t) crc32(m_crcDigest, ptr, (uint32_t) length);
 
     void *crcPtr = m_metaFile.getMemory();

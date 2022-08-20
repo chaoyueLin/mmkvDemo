@@ -35,7 +35,7 @@ android {
             jniDebuggable true
         }
     }
-    ndkVersion '22.0.7026061'
+    ndkVersion '21.4.7075529'
 }
 
 
