@@ -81,3 +81,67 @@ protobuf协议在CodeInputData读取，CodeOutputData写入的对称关系
 2.cmmkv是自己写的例子，去掉加密校验，具体三个阶段打了tag.
 ![](./cmmkv1.png)
 ![](./cmmkv2.png)
+
+## 校验使用
+校验的文件是保存在.crc文件中
+
+	/**
+	 * 全局数据校验
+	 * @return
+	 */
+	bool MMKV::checkFileCRCValid() {
+	    if (m_ptr && m_ptr != MAP_FAILED) {
+	        constexpr int offset = pbFixed32Size(0);
+	
+	        //从0开始，m_crcDigest，与下面的recaculateCRCDigest对应使用
+	        m_crcDigest =
+	                (uint32_t) crc32(0, (const uint8_t *) m_ptr + offset, (uint32_t) m_actualSize);
+	        m_metaInfo.read(m_metaFile.getMemory());
+	        if (m_crcDigest == m_metaInfo.m_crcDigest) {
+	            return true;
+	        }
+	        MMKVError("check crc [%s] fail, crc32:%u, m_crcDigest:%u", m_mmapID.c_str(),
+	                  m_metaInfo.m_crcDigest, m_crcDigest);
+	    }
+	    return false;
+	}
+	
+	/**
+	 * 初始一段数据生成
+	 */
+	void MMKV::recaculateCRCDigest() {
+	    if (m_ptr && m_ptr != MAP_FAILED) {
+	        //第一次才调用，m_crcDigest也是从0开始
+	        m_crcDigest = 0;
+	        constexpr int offset = pbFixed32Size(0);
+	        updateCRCDigest((const uint8_t *) m_ptr + offset, m_actualSize, IncreaseSequence);
+	    }
+	}
+	
+	/**
+	 * 从初始一段后面继续更新
+	 * @param ptr
+	 * @param length
+	 * @param increaseSequence
+	 */
+	void MMKV::updateCRCDigest(const uint8_t *ptr, size_t length, bool increaseSequence) {
+	    if (!ptr) {
+	        return;
+	    }
+	    //m_crcDigest为取上个值再计算
+	    m_crcDigest = (uint32_t) crc32(m_crcDigest, ptr, (uint32_t) length);
+	
+	    void *crcPtr = m_metaFile.getMemory();
+	    if (crcPtr == nullptr || crcPtr == MAP_FAILED) {
+	        return;
+	    }
+	
+	    m_metaInfo.m_crcDigest = m_crcDigest;
+	    if (increaseSequence) {
+	        m_metaInfo.m_sequence++;
+	    }
+	    if (m_metaInfo.m_version == 0) {
+	        m_metaInfo.m_version = 1;
+	    }
+	    m_metaInfo.write(crcPtr);
+	}
